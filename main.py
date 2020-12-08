@@ -1,6 +1,7 @@
 
 import pymysql.cursors
 import pandas as pd
+from functions import sql_insert
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
@@ -23,3 +24,11 @@ if __name__ == '__main__':
         except ValueError:
             print("\nI said one of those numbers dumbass\n")
             continue
+    # if choice == 1:
+    # if choice == 2:
+    # if choice == 3:
+    # if choice == 4:
+    # if choice == 5:
+    connection.close()
+
+sql_insert()
