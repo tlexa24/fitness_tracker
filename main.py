@@ -1,9 +1,8 @@
 
 import pymysql.cursors
 import pandas as pd
-import datetime
 import run_log_class
-import functions
+import weight_log_class
 # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 # print("date and time:",date_time)
 
@@ -28,16 +27,15 @@ if __name__ == '__main__':
             else:
                 raise ValueError
         except ValueError:
-            print("\nI said one of those numbers dumbass\n")
+            print("\nOnly enter one of the following numbers.\n")
             continue
-    # if choice == 1:
-    if choice == 2:
-        date_object = str(datetime.date.today())
-        time = functions.get_run_time()
-        miles = functions.get_miles()
-        run = run_log_class.Run(date_object, miles, time)
+    # if choice == '1':
+    if choice == '2':
+        run = run_log_class.create_run_instance()
         run.insert()
-    # if choice == 3:
-    # if choice == 4:
-    # if choice == 5:
-    # if choice == 6:
+    if choice == '3':
+        weight = weight_log_class.create_weight_instance()
+        weight.insert()
+    # if choice == '4':
+    # if choice == '5':
+    # if choice == '6':
