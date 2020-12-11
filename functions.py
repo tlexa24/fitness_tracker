@@ -14,7 +14,7 @@ def name_converter(string):
     string = string.replace('-', ' ')
     return string
 
-def check_in_list(var, lst):
+def check_if_in_list(var, lst):
     if var in lst:
         return True
     else:
@@ -32,12 +32,12 @@ def float_checker(num):
 def length_checker(var, needed_len):
     return len(var) == needed_len
 
-def max_length(var, maxi):
+def max_length_checker(var, maxi):
     return len(var) <= maxi
 
 def float41_checker(num):
-    if float_checker(num) and max_length(num, 5):
-        if max_length(str(float(num)).split('.')[1], 1):
+    if float_checker(num) and max_length_checker(num, 5):
+        if max_length_checker(str(float(num)).split('.')[1], 1):
             return True
         else:
             return False
@@ -74,22 +74,22 @@ def get_time(w_r):
             print('Input again, using only numbers and two digits for each\n')
             continue
 
-def get_time_of_day():
-    ap = 4
+def am_or_pm():
     while True:
         try:
             ampm = input('AM or PM? ')
             if ampm == 'AM' or ampm == 'am':
-                ap = 0
-                break
+                return 0
             elif ampm == 'PM' or ampm == 'pm':
-                ap = 1
-                break
+                return 1
             else:
                 raise ValueError
         except ValueError:
             print('\nSelect AM, am, PM, or pm:\n')
             continue
+
+def get_time_of_day():
+    ap = am_or_pm()
     time = get_time('w')
     if ap == 0:
         return time

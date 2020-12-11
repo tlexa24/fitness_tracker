@@ -1,13 +1,15 @@
 import pymysql.cursors
-import run_log_class
-import weight_log_class
-import diet_log_class
-import lift_log
+import log_runs
+import log_weight
+import log_diet
+import log_lifts
 
-connection = pymysql.connect(host='localhost', user='root', password='troopsix', db='fitness', charset='utf8mb4',
+connection = pymysql.connect(host='localhost', user='root', password='troopsix',
+                             db='fitness', charset='utf8mb4',
                              cursorclass=pymysql.cursors.Cursor)
 
-connectiondict = pymysql.connect(host='localhost', user='root', password='troopsix', db='fitness', charset='utf8mb4',
+connectiondict = pymysql.connect(host='localhost', user='root', password='troopsix',
+                                 db='fitness', charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
 
 def initial_choice():
@@ -32,12 +34,12 @@ def initial_choice():
 def start_program():
     choice = initial_choice()
     if choice == '1':
-        lift_log.create_insert_lift()
+        log_lifts.create_insert_lift()
     if choice == '2':
-        run_log_class.create_insert_run()
+        log_runs.create_insert_run()
     if choice == '3':
-        weight_log_class.create_insert_weight()
+        log_weight.create_insert_weight()
     if choice == '4':
-        diet_log_class.create_insert_diet()
+        log_diet.create_insert_diet()
     # if choice == '5':
     # if choice == '6':

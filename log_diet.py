@@ -33,7 +33,7 @@ class Diet:
         self.fats = fats
         self.proteins = proteins
 
-    def insert(self):
+    def insert_to_sql(self):
         conn = starter.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO diet_log VALUES ('" + self.date + "', '" + self.cals \
@@ -50,7 +50,6 @@ class Diet:
                 print('Please retry with correct info')
                 return ''
 
-
 def create_insert_diet():
     diet = create_diet_instance()
-    diet.insert()
+    diet.insert_to_sql()

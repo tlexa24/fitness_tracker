@@ -14,7 +14,6 @@ def get_miles():
             print('Input again, using only numbers in xxx.x format:\n')
             continue
 
-
 def run_time():
     times = functions.get_time('r')
     time = ':'.join(times)
@@ -33,7 +32,7 @@ class Run:
         self.miles = m
         self.time = t
 
-    def insert(self):
+    def insert_to_sql(self):
         conn = starter.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO run_log VALUES ('" + self.date + "', '" + self.miles + "', '" + self.time + "')"
@@ -50,4 +49,4 @@ class Run:
 
 def create_insert_run():
     run = create_run_instance()
-    run.insert()
+    run.insert_to_sql()

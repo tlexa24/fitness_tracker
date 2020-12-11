@@ -47,7 +47,7 @@ class Weight:
         self.lift = lft
         self.run = r
 
-    def insert(self):
+    def insert_to_sql(self):
         conn = starter.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO weight_log VALUES ('" + self.date + "', '" + self.time + "', '" + self.weight + "', '" \
@@ -66,4 +66,4 @@ class Weight:
 
 def create_insert_weight():
     weight = create_weight_instance()
-    weight.insert()
+    weight.insert_to_sql()

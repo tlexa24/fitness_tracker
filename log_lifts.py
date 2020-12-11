@@ -1,6 +1,6 @@
 import starter
 import functions
-import weight_log_class
+import log_weight
 import datetime
 
 def get_program():
@@ -14,7 +14,7 @@ def get_program():
                 for row in result:
                     print(str(row[0]) + '. ' + str(row[1]))
                 program = input('Which program are you using? Enter one of the above numbers: ')
-                if functions.check_in_list(program, choices):
+                if functions.check_if_in_list(program, choices):
                     return program
                 else:
                     print('\n\nChoose only one of the given numbers.')
@@ -34,7 +34,7 @@ def get_routine():
                 for row in result:
                     print(str(row[0]) + '. ' + functions.name_converter(str(row[1])))
                 routine = input('Which routine are you logging results for? Enter one of the above numbers: ')
-                if functions.check_in_list(routine, choices):
+                if functions.check_if_in_list(routine, choices):
                     return routine
                 else:
                     print('\n\nChoose only one of the given numbers.')
@@ -75,7 +75,7 @@ def get_results():
         print('Did you use {} lbs. for {}? '.format(exercise['current'], functions.name_converter(exercise['name'])))
         confirm = functions.get_yn()
         if confirm == 'n':
-            exercise['current'] = weight_log_class.get_weight()
+            exercise['current'] = log_weight.get_weight()
         num_sets = exercise['sets']
         successful_sets = 0
         reps_to_hit = exercise['reps']
@@ -110,7 +110,7 @@ class Lift:
         self.set = setno
         self.reps = reps
 
-    def insert(self):
+    def insert_to_sql(self):
         conn = starter.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO lift_log VALUES ('{}', '{}', '{}', '{}', '{}');".format(self.date, self.ID,
@@ -124,5 +124,5 @@ def create_insert_lift():
     for lift in lift_inputs:
         for n in range(1, lift['sets'] + 1):
             lift_obj = Lift(day, lift['ID'], lift['current'], n, lift['Set {}'.format(n)])
-            lift_obj.insert()
+            lift_obj.insert_to_sql()
     starter.connection.close()
