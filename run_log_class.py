@@ -1,4 +1,4 @@
-import main
+import starter
 import functions
 import datetime
 
@@ -34,7 +34,7 @@ class Run:
         self.time = t
 
     def insert(self):
-        conn = main.connection
+        conn = starter.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO run_log VALUES ('" + self.date + "', '" + self.miles + "', '" + self.time + "')"
             print('\n\n\nMiles: ' + self.miles + '\nTime: ' + self.time + '\nIs this info correct?')
@@ -47,3 +47,7 @@ class Run:
             else:
                 print('Please retry with correct info')
                 return ''
+
+def create_insert_run():
+    run = create_run_instance()
+    run.insert()

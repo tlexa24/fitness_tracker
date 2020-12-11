@@ -1,4 +1,4 @@
-import main
+import starter
 import functions
 import datetime
 
@@ -48,7 +48,7 @@ class Weight:
         self.run = r
 
     def insert(self):
-        conn = main.connection
+        conn = starter.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO weight_log VALUES ('" + self.date + "', '" + self.time + "', '" + self.weight + "', '" \
                   + self.bodyfat + "', '" + self.lift + "', '" + self.run + "')"
@@ -63,3 +63,7 @@ class Weight:
             else:
                 print('Please retry with correct info')
                 return ''
+
+def create_insert_weight():
+    weight = create_weight_instance()
+    weight.insert()

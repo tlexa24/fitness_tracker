@@ -1,11 +1,10 @@
-import main
+import starter
 import functions
 import weight_log_class
 import datetime
-import lift_log_class
 
 def get_program():
-    with main.connection.cursor() as cursor:
+    with starter.connection.cursor() as cursor:
         sql = "SELECT program_ID, program_name FROM programs;"
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -24,7 +23,7 @@ def get_program():
                 continue
 
 def get_routine():
-    with main.connection.cursor() as cursor:
+    with starter.connection.cursor() as cursor:
         program = get_program()
         sql = "SELECT routine_ID, routine_name FROM routines WHERE program_id = '{}';".format(program)
         cursor.execute(sql)
@@ -44,7 +43,7 @@ def get_routine():
                 continue
 
 def get_exercises():
-    dictconn = main.connectiondict
+    dictconn = starter.connectiondict
     with dictconn.cursor() as cursor:
         routine = get_routine()
         sql = "SELECT exercise_name, exercises.exercise_ID, reps, sets, current_weight, weight_progressor " \
@@ -66,24 +65,17 @@ def get_exercises():
 
 def update_weight(exercise, new):
     sql = "UPDATE exercises SET current_weight = '{}' WHERE exercise_ID = '{}';".format(new, exercise)
-    with main.connection.cursor() as cursor:
+    with starter.connection.cursor() as cursor:
         cursor.execute(sql)
-        main.connection.commit()
+        starter.connection.commit()
 
 def get_results():
     template = get_exercises()
     for exercise in template:
         print('Did you use {} lbs. for {}? '.format(exercise['current'], functions.name_converter(exercise['name'])))
         confirm = functions.get_yn()
-        log_weight = exercise['current']
         if confirm == 'n':
             exercise['current'] = weight_log_class.get_weight()
-        # if dict['current'] != 0:
-        #     print('Did you use {} lbs. for {}? '.format(dict['current'], dict['name']))
-        #     confirm = functions.get_yn()
-        #     log_weight = dict['current']
-        #     if confirm == 'n':
-        #         log_weight = weight_log_class.get_weight()
         num_sets = exercise['sets']
         successful_sets = 0
         reps_to_hit = exercise['reps']
@@ -110,18 +102,27 @@ def get_results():
                 update_weight(exercise['ID'], float(exercise['current']) + int(exercise['progressor']))
     return template
 
+class Lift:
+    def __init__(self, date, exercise_id, weight, setno, reps):
+        self.date = date
+        self.ID = exercise_id
+        self.weight = weight
+        self.set = setno
+        self.reps = reps
+
+    def insert(self):
+        conn = starter.connection
+        with conn.cursor() as cursor:
+            sql = "INSERT INTO lift_log VALUES ('{}', '{}', '{}', '{}', '{}');".format(self.date, self.ID,
+                                                                                       self.weight, self.set, self.reps)
+            cursor.execute(sql)
+            conn.commit()
+
 def create_insert_lift():
     day = str(datetime.date.today())
     lift_inputs = get_results()
     for lift in lift_inputs:
         for n in range(1, lift['sets'] + 1):
-            lift_obj = lift_log_class.Lift(day, lift['ID'], lift['current'], n, lift['Set {}'.format(n)])
+            lift_obj = Lift(day, lift['ID'], lift['current'], n, lift['Set {}'.format(n)])
             lift_obj.insert()
-    main.connection.close()
-
-
-
-
-# lift_log = date, exerciseID, setno, reps, weight
-# need to go from exercise with set numbers, to dict for each set of each exercise
-# print(get_results())
+    starter.connection.close()
