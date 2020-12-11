@@ -2,11 +2,34 @@ import main
 import functions
 import datetime
 
+def get_weight():
+    while True:
+        try:
+            weight = input('Enter the weight: ')
+            if functions.float41_checker(weight):
+                return str(weight)
+            else:
+                raise ValueError
+        except ValueError:
+            print('Input again, using only numbers in xxx.x format:\n')
+            continue
+
+def get_bf():
+    while True:
+        try:
+            bf = input('Enter the body fat % in xx.x format: ')
+            if functions.float41_checker(bf):
+                return str(bf)
+            else:
+                raise ValueError
+        except ValueError:
+            print('Input again, using only numbers in xxx.x format:\n')
+            continue
 def create_weight_instance():
     date_object = str(datetime.date.today())
     time = functions.get_time_of_day()
-    wt = functions.get_weight()
-    bodyfat = functions.get_bf()
+    wt = get_weight()
+    bodyfat = get_bf()
     print('Did you lift yesterday?')
     lift_question = functions.get_yn()
     print('Did you run yesterday?')

@@ -92,18 +92,6 @@ def get_time_of_day():
     time = ':'.join(times)
     return time
 
-def get_miles():
-    while True:
-        try:
-            miles = input('How many miles (xxx.x): ')
-            if float41_checker(miles):
-                return str(miles)
-            else:
-                raise ValueError
-        except ValueError:
-            print('Input again, using only numbers in xxx.x format:\n')
-            continue
-
 def get_yn():
     while True:
         try:
@@ -114,28 +102,4 @@ def get_yn():
                 raise ValueError
         except ValueError:
             print('\nEnter only y/n\n')
-            continue
-
-def get_weight():
-    while True:
-        try:
-            weight = input('Enter the weight: ')
-            if float41_checker(weight):
-                return str(weight)
-            else:
-                raise ValueError
-        except ValueError:
-            print('Input again, using only numbers in xxx.x format:\n')
-            continue
-
-def get_bf():
-    while True:
-        try:
-            bf = input('Enter the body fat % in xx.x format: ')
-            if float41_checker(bf):
-                return str(bf)
-            else:
-                raise ValueError
-        except ValueError:
-            print('Input again, using only numbers in xxx.x format:\n')
             continue

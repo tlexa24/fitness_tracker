@@ -3,6 +3,7 @@ import pymysql.cursors
 import pandas as pd
 import run_log_class
 import weight_log_class
+import diet_log_class
 # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 # print("date and time:",date_time)
 
@@ -36,6 +37,8 @@ if __name__ == '__main__':
     if choice == '3':
         weight = weight_log_class.create_weight_instance()
         weight.insert()
-    # if choice == '4':
+    if choice == '4':
+        diet = diet_log_class.create_diet_instance()
+        diet.insert()
     # if choice == '5':
     # if choice == '6':

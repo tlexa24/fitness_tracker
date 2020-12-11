@@ -2,10 +2,22 @@ import main
 import functions
 import datetime
 
+def get_miles():
+    while True:
+        try:
+            miles = input('How many miles (xxx.x): ')
+            if functions.float41_checker(miles):
+                return str(miles)
+            else:
+                raise ValueError
+        except ValueError:
+            print('Input again, using only numbers in xxx.x format:\n')
+            continue
+
 def create_run_instance():
     date = str(datetime.date.today())
     runtime = functions.run_time()
-    miles = functions.get_miles()
+    miles = get_miles()
     run_obj = Run(date, miles, runtime)
     return run_obj
 
