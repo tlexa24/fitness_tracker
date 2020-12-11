@@ -1,16 +1,16 @@
 
 import pymysql.cursors
-import pandas as pd
 import run_log_class
 import weight_log_class
 import diet_log_class
+import lift_log
 # date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
 # print("date and time:",date_time)
 
-
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', 1000)
 connection = pymysql.connect(host='localhost', user='root', password='troopsix', db='fitness', charset='utf8mb4',
+                             cursorclass=pymysql.cursors.Cursor)
+
+connectiondict = pymysql.connect(host='localhost', user='root', password='troopsix', db='fitness', charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
 if __name__ == '__main__':
@@ -30,7 +30,8 @@ if __name__ == '__main__':
         except ValueError:
             print("\nOnly enter one of the following numbers.\n")
             continue
-    # if choice == '1':
+    if choice == '1':
+        lift_log.create_insert_lift()
     if choice == '2':
         run = run_log_class.create_run_instance()
         run.insert()

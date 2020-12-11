@@ -14,9 +14,15 @@ def get_miles():
             print('Input again, using only numbers in xxx.x format:\n')
             continue
 
+
+def run_time():
+    times = functions.get_time('r')
+    time = ':'.join(times)
+    return time
+
 def create_run_instance():
     date = str(datetime.date.today())
-    runtime = functions.run_time()
+    runtime = run_time()
     miles = get_miles()
     run_obj = Run(date, miles, runtime)
     return run_obj

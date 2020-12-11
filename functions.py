@@ -9,6 +9,17 @@ def int_checker(num):
         pass
     return result
 
+def name_converter(string):
+    string = string.replace('_', ' ')
+    string = string.replace('-', ' ')
+    return string
+
+def check_in_list(var, lst):
+    if var in lst:
+        return True
+    else:
+        return False
+
 def float_checker(num):
     result = False
     try:
@@ -25,8 +36,11 @@ def max_length(var, maxi):
     return len(var) <= maxi
 
 def float41_checker(num):
-    if float_checker(num) and max_length(num, 5) and max_length(num.split('.')[1], 1):
-        return True
+    if float_checker(num) and max_length(num, 5):
+        if max_length(str(float(num)).split('.')[1], 1):
+            return True
+        else:
+            return False
     else:
         return False
 
@@ -59,11 +73,6 @@ def get_time(w_r):
         except ValueError:
             print('Input again, using only numbers and two digits for each\n')
             continue
-
-def run_time():
-    times = get_time('r')
-    time = ':'.join(times)
-    return time
 
 def get_time_of_day():
     ap = 4

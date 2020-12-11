@@ -5,7 +5,7 @@ import datetime
 def get_weight():
     while True:
         try:
-            weight = input('Enter the weight: ')
+            weight = input('Enter the correct weight(xxx.x): ')
             if functions.float41_checker(weight):
                 return str(weight)
             else:
@@ -25,6 +25,7 @@ def get_bf():
         except ValueError:
             print('Input again, using only numbers in xxx.x format:\n')
             continue
+
 def create_weight_instance():
     date_object = str(datetime.date.today())
     time = functions.get_time_of_day()
