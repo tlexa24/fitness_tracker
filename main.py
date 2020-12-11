@@ -1,4 +1,4 @@
-import starter
+from starter import start_program
 
 if __name__ == '__main__':
-    starter.start_program()
+    start_program()
