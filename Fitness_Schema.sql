@@ -73,3 +73,13 @@ FOREIGN KEY (routine_ID) REFERENCES routines(routine_ID),
 FOREIGN KEY (exercise_ID) REFERENCES exercises(exercise_ID)
 );
 
+CREATE TABLE program_schedule (
+program_ID INT NOT NULL,
+day_in_program INT NOT NULL, 
+workout_1 INT, 
+workout_2 INT,
+run ENUM('yes', 'no') NOT NULL,
+PRIMARY KEY (program_ID, day_in_program),
+FOREIGN KEY(workout_1) references routines(routine_ID),
+FOREIGN KEY(workout_2) references routines(routine_ID)); 
+                                           
