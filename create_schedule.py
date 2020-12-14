@@ -135,5 +135,5 @@ def print_schedule():
             print('\n')
         if day['ab_routine'] is not None:
             print(day['ab_routine'])
-
-print_schedule()
+    starter.connection.close()
+    starter.connectiondict.close()
