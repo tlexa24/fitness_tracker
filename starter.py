@@ -5,7 +5,6 @@ import log_lifts
 import create_schedule
 
 def initial_choice():
-    print('while true')
     while True:
         print('1. Log lift \n'
               '2. Log run \n'

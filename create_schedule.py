@@ -76,7 +76,7 @@ def get_next_4_days():
     last_lift = get_last_lift(program)
     list_of_days = get_list_of_days(full_schedule)
     today = get_today(last_lift, full_schedule)
-    next_4_days = cycled_picker_list(list_of_days.index(today + 1), list_of_days, 4)
+    next_4_days = cycled_picker_list((list_of_days.index(today) + 1), list_of_days, 4)
     return program, next_4_days
 
 def get_next_4_schedules():
