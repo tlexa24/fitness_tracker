@@ -1,11 +1,11 @@
-import starter
+import mysql_connections
 import functions
 import datetime
 
 def get_weight():
     while True:
         try:
-            weight = input('Enter the correct weight(xxx.x): ')
+            weight = input('Enter weight(xxx.x): ')
             if functions.float41_checker(weight):
                 return str(weight)
             else:
@@ -48,7 +48,7 @@ class Weight:
         self.run = r
 
     def insert_to_sql(self):
-        conn = starter.connection
+        conn = mysql_connections.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO weight_log VALUES ('" + self.date + "', '" + self.time + "', '" + self.weight + "', '" \
                   + self.bodyfat + "', '" + self.lift + "', '" + self.run + "')"

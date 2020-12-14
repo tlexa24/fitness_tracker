@@ -1,19 +1,11 @@
-import pymysql.cursors
 import log_runs
 import log_weight
 import log_diet
 import log_lifts
 import create_schedule
 
-connection = pymysql.connect(host='localhost', user='root', password='troopsix',
-                             db='fitness', charset='utf8mb4',
-                             cursorclass=pymysql.cursors.Cursor)
-
-connectiondict = pymysql.connect(host='localhost', user='root', password='troopsix',
-                                 db='fitness', charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-
 def initial_choice():
+    print('while true')
     while True:
         print('1. Log lift \n'
               '2. Log run \n'

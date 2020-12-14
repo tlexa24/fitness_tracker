@@ -1,12 +1,11 @@
-import starter
+import mysql_connections
 import functions
-import log_lifts
 from itertools import cycle, islice
 import datetime
 import pandas as pd
 
 def get_full_schedule(program):
-    with starter.connectiondict.cursor() as cursor:
+    with mysql_connections.connectiondict.cursor() as cursor:
         sql = "SELECT * FROM program_schedule WHERE program_ID = {};".format(program)
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -19,7 +18,7 @@ def get_list_of_days(schedule):
     return days
 
 def get_last_lift(program):
-    with starter.connection.cursor() as cursor:
+    with mysql_connections.connection.cursor() as cursor:
         sql = "SELECT routine_ID, routine_name FROM routines WHERE program_id = '{}';".format(program)
         cursor.execute(sql)
         result = cursor.fetchall()[:6]
@@ -52,9 +51,27 @@ def cycled_picker_list(starting_point, starting_list, elements):
         final_list.append(next(starting_at_today))
     return final_list
 
+def get_program():
+    with mysql_connections.connection.cursor() as cursor:
+        sql = "SELECT program_ID, program_name FROM programs;"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        choices = [str(row[0]) for row in result]
+        while True:
+            try:
+                for row in result:
+                    print(str(row[0]) + '. ' + str(row[1]))
+                program = input('Which program are you using? Enter one of the above numbers: ')
+                if functions.check_if_in_list(program, choices):
+                    return program
+                else:
+                    print('\n\nChoose only one of the given numbers.')
+                    raise ValueError
+            except ValueError:
+                continue
 
 def get_next_4_days():
-    program = log_lifts.get_program()
+    program = get_program()
     full_schedule = get_full_schedule(program)
     last_lift = get_last_lift(program)
     list_of_days = get_list_of_days(full_schedule)
@@ -66,7 +83,7 @@ def get_next_4_schedules():
     next_4_days = get_next_4_days()
     program = next_4_days[0]
     days_list = next_4_days[1]
-    with starter.connectiondict.cursor() as cursor:
+    with mysql_connections.connectiondict.cursor() as cursor:
         sql = "SELECT day_of_week, lifting_routine, ab_routine, run " \
               "FROM program_schedule " \
               "WHERE program_ID = {} " \
@@ -89,8 +106,9 @@ def change_days_to_dates():
     return days
 
 def dict_to_df(sql):
-    df = pd.read_sql(sql, starter.connection)
-    df = df.rename(columns={'exercise_name': 'Exercise', 'sets': 'Sets', 'reps': 'Reps', 'current_weight': 'Weight'})
+    df = pd.read_sql(sql, mysql_connections.connection)
+    df = df.rename(columns={'exercise_name': 'Exercise', 'sets': 'Sets', 'reps': 'Reps', 'current_weight': 'Weight',
+                            'last_set_AMRAP': 'Last AMRAP'})
     df.set_index('exercise_order', inplace=True)
     df.index.name = None
     return df
@@ -99,7 +117,7 @@ def get_routine_dataframes():
     schedule = change_days_to_dates()
     for day in schedule:
         if day['lifting_routine'] is not None:
-            sql = "SELECT exercise_order, exercise_name, sets, reps, current_weight " \
+            sql = "SELECT exercise_order, exercise_name, sets, reps, current_weight, last_set_AMRAP " \
                   "FROM exercises_in_routines " \
                   "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID " \
                   "WHERE routine_id = '{}'" \
@@ -135,5 +153,3 @@ def print_schedule():
             print('\n')
         if day['ab_routine'] is not None:
             print(day['ab_routine'])
-    starter.connection.close()
-    starter.connectiondict.close()

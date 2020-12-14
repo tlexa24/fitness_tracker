@@ -1,10 +1,9 @@
-import starter
+import mysql_connections
 import functions
-import log_weight
 import datetime
 
 def get_program():
-    with starter.connection.cursor() as cursor:
+    with mysql_connections.connection.cursor() as cursor:
         sql = "SELECT program_ID, program_name FROM programs;"
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -23,7 +22,7 @@ def get_program():
                 continue
 
 def get_routine():
-    with starter.connection.cursor() as cursor:
+    with mysql_connections.connection.cursor() as cursor:
         program = get_program()
         sql = "SELECT routine_ID, routine_name FROM routines WHERE program_id = '{}';".format(program)
         cursor.execute(sql)
@@ -43,7 +42,7 @@ def get_routine():
                 continue
 
 def get_exercises():
-    dictconn = starter.connectiondict
+    dictconn = mysql_connections.connectiondict
     with dictconn.cursor() as cursor:
         routine = get_routine()
         sql = "SELECT exercise_name, exercises.exercise_ID, reps, sets, current_weight, weight_progressor " \
@@ -66,9 +65,21 @@ def get_exercises():
 
 def update_weight(exercise, new):
     sql = "UPDATE exercises SET current_weight = '{}' WHERE exercise_ID = '{}';".format(new, exercise)
-    with starter.connection.cursor() as cursor:
+    with mysql_connections.connection.cursor() as cursor:
         cursor.execute(sql)
-        starter.connection.commit()
+        mysql_connections.connection.commit()
+
+def get_weight():
+    while True:
+        try:
+            weight = input('Enter the correct weight(xxx.x): ')
+            if functions.float41_checker(weight):
+                return str(weight)
+            else:
+                raise ValueError
+        except ValueError:
+            print('Input again, using only numbers in xxx.x format:\n')
+            continue
 
 def get_results():
     template = get_exercises()
@@ -76,7 +87,7 @@ def get_results():
         print('Did you use {} lbs. for {}? '.format(exercise['current'], functions.name_converter(exercise['name'])))
         confirm = functions.get_yn()
         if confirm == 'n':
-            exercise['current'] = log_weight.get_weight()
+            exercise['current'] = get_weight()
         num_sets = exercise['sets']
         successful_sets = 0
         reps_to_hit = exercise['reps']
@@ -112,7 +123,7 @@ class Lift:
         self.reps = reps
 
     def insert_to_sql(self):
-        conn = starter.connection
+        conn = mysql_connections.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO lift_log VALUES ('{}', '{}', '{}', '{}', '{}');".format(self.date, self.ID,
                                                                                        self.weight, self.set, self.reps)
@@ -126,4 +137,4 @@ def create_insert_lift():
         for n in range(1, lift['sets'] + 1):
             lift_obj = Lift(day, lift['ID'], lift['current'], n, lift['Set {}'.format(n)])
             lift_obj.insert_to_sql()
-    starter.connection.close()
+    mysql_connections.connection.close()
