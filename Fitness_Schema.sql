@@ -56,7 +56,8 @@ exercise_ID INT NOT NULL,
 sets INT NOT NULL,
 reps INT NOT NULL,
 last_set_AMRAP ENUM('yes', 'no') NOT NULL,
-PRIMARY KEY (routine_ID, exercise_ID),
+exercise_order INT NOT NULL,
+PRIMARY KEY (routine_ID, exercise_order),
 FOREIGN KEY (routine_ID) REFERENCES routines(routine_ID),
 FOREIGN KEY (exercise_ID) REFERENCES exercises(exercise_ID)
 );
