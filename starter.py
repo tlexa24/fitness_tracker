@@ -3,6 +3,7 @@ import log_runs
 import log_weight
 import log_diet
 import log_lifts
+import create_schedule
 
 connection = pymysql.connect(host='localhost', user='root', password='troopsix',
                              db='fitness', charset='utf8mb4',
@@ -41,5 +42,6 @@ def start_program():
         log_weight.create_insert_weight()
     if choice == '4':
         log_diet.create_insert_diet()
-    # if choice == '5':
+    if choice == '5':
+        create_schedule.print_schedule()
     # if choice == '6':

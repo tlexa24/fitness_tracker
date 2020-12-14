@@ -49,7 +49,8 @@ def get_exercises():
         sql = "SELECT exercise_name, exercises.exercise_ID, reps, sets, current_weight, weight_progressor " \
               "FROM exercises_in_routines " \
               "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID " \
-              "WHERE routine_id = '{}';".format(routine)
+              "WHERE routine_id = '{}'" \
+              "ORDER BY exercise_order ASC;".format(routine)
         cursor.execute(sql)
         result = cursor.fetchall()
         dictconn.close()
