@@ -1,4 +1,4 @@
-import starter
+import mysql_connections
 import functions
 import datetime
 
@@ -34,7 +34,7 @@ class Diet:
         self.proteins = proteins
 
     def insert_to_sql(self):
-        conn = starter.connection
+        conn = mysql_connections.connection
         with conn.cursor() as cursor:
             sql = "INSERT INTO diet_log VALUES ('" + self.date + "', '" + self.cals \
                   + "', '" + self.carbs + "', '" + self.fats + "', '" + self.proteins + "')"

@@ -28,32 +28,23 @@ def get_bf():
 
 def create_weight_instance():
     date_object = str(datetime.date.today())
-    time = functions.get_time_of_day()
     wt = get_weight()
     bodyfat = get_bf()
-    print('Did you lift yesterday?')
-    lift_question = functions.get_yn()
-    print('Did you run yesterday?')
-    run_question = functions.get_yn()
-    waight = Weight(date_object, time, wt, bodyfat, lift_question, run_question)
+    waight = Weight(date_object, wt, bodyfat)
     return waight
 
 class Weight:
-    def __init__(self, d, t, wt, b, lft, r):
+    def __init__(self, d, wt, b):
         self.date = d
-        self.time = t
         self.weight = wt
         self.bodyfat = b
-        self.lift = lft
-        self.run = r
 
     def insert_to_sql(self):
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
-            sql = "INSERT INTO weight_log VALUES ('" + self.date + "', '" + self.time + "', '" + self.weight + "', '" \
-                  + self.bodyfat + "', '" + self.lift + "', '" + self.run + "')"
-            print('\n\n\nTime: ' + self.time + '\nWeight: ' + self.weight + '\nBody Fat: ' + self.bodyfat + '\nLift? ' +
-                  self.lift + '\nRun? ' + self.run + '\nIs this info correct?')
+            sql = "INSERT INTO weight_log VALUES ('" + self.date + "', '" + self.weight + "', '" \
+                  + self.bodyfat + "')"
+            print('\n\n\nnWeight: ' + self.weight + '\nBody Fat: ' + self.bodyfat + '\nIs this info correct?')
             confirm = functions.get_yn()
             if confirm == 'y':
                 cursor.execute(sql)
