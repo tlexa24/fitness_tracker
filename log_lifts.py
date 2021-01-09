@@ -1,6 +1,8 @@
 import mysql_connections
 import functions
 import datetime
+import pandas as pd
+from openpyxl import load_workbook
 
 def get_program():
     with mysql_connections.connection.cursor() as cursor:
@@ -22,19 +24,24 @@ def get_program():
                 continue
 
 def get_routine():
-    with mysql_connections.connection.cursor() as cursor:
+    with mysql_connections.connectiondict.cursor() as cursor:
         program = get_program()
         sql = "SELECT routine_ID, routine_name FROM routines WHERE program_id = '{}';".format(program)
         cursor.execute(sql)
         result = cursor.fetchall()
-        choices = [str(row[0]) for row in result]
+        print(result)
+        choices = [str(row['routine_ID']) for row in result]
+        # print([str(row[1]) for row in result])
         while True:
             try:
                 for row in result:
-                    print(str(row[0]) + '. ' + functions.name_converter(str(row[1])))
+                    print(str(row['routine_ID']) + '. ' + functions.name_converter(str(row['routine_name'])))
                 routine = input('Which routine are you logging results for? Enter one of the above numbers: ')
                 if functions.check_if_in_list(routine, choices):
-                    return routine
+                    for row in result:
+                        if str(row['routine_ID']) == routine:
+                            return routine, row['routine_name']
+                    return routine,
                 else:
                     print('\n\nChoose only one of the given numbers.')
                     raise ValueError
@@ -49,15 +56,16 @@ def get_exercises():
               "FROM exercises_in_routines " \
               "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID " \
               "WHERE routine_id = '{}'" \
-              "ORDER BY exercise_order ASC;".format(routine)
+              "ORDER BY exercise_order ASC;".format(routine[0])
         cursor.execute(sql)
         result = cursor.fetchall()
         dictconn.close()
         log_template = []
         for d in result:
             num_sets = d['sets']
-            exercise_dict = {'name': d['exercise_name'], 'ID': d['exercise_ID'], 'progressor': d['weight_progressor'],
-                             'sets': d['sets'], 'current': d['current_weight'], 'reps': d['reps']}
+            exercise_dict = {'name': d['exercise_name'], 'routine': routine[1], 'ID': d['exercise_ID'],
+                             'progressor': d['weight_progressor'], 'sets': d['sets'],
+                             'current': d['current_weight'], 'reps': d['reps']}
             for n in range(1, num_sets + 1):
                 exercise_dict['Set {}'.format(n)] = {}
             log_template.append(exercise_dict)
@@ -115,8 +123,10 @@ def get_results():
     return template
 
 class Lift:
-    def __init__(self, date, exercise_id, weight, setno, reps):
+    def __init__(self, date, ex_name, routine_name, exercise_id, weight, setno, reps):
         self.date = date
+        self.exercise_name = ex_name
+        self.routine = routine_name
         self.ID = exercise_id
         self.weight = weight
         self.set = setno
@@ -130,11 +140,26 @@ class Lift:
             cursor.execute(sql)
             conn.commit()
 
+    def insert_to_excel(self):
+        data = {'Date': [self.date], 'Routine': [self.routine], 'Exercise': [self.exercise_name],
+                'Weight': [float(self.weight)], 'Set': [int(self.set)], 'Reps': [float(self.reps)]}
+        df = pd.DataFrame.from_dict(data)
+        writer = pd.ExcelWriter('fitness_data.xlsx', engine='openpyxl')
+        writer.book = load_workbook('fitness_data.xlsx')
+        writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
+        reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='lift')
+        df.to_excel(writer, index=False, header=False, sheet_name='lift', startrow=len(reader) + 1)
+        writer.close()
+
 def create_insert_lift():
     day = str(datetime.date.today())
     lift_inputs = get_results()
     for lift in lift_inputs:
         for n in range(1, lift['sets'] + 1):
-            lift_obj = Lift(day, lift['ID'], lift['current'], n, lift['Set {}'.format(n)])
+            lift_obj = Lift(day, lift['name'], lift['routine'], lift['ID'],
+                            lift['current'], n, lift['Set {}'.format(n)])
             lift_obj.insert_to_sql()
+            lift_obj.insert_to_excel()
     mysql_connections.connection.close()
+    print('\nRun data successfully inserted to fitness_data.xlsx')
+    print('Run data successfully inserted to SQL\n')

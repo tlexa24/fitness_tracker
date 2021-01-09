@@ -1,6 +1,8 @@
 import mysql_connections
 import functions
 import datetime
+import pandas as pd
+from openpyxl import load_workbook
 
 def get_miles():
     while True:
@@ -47,6 +49,18 @@ class Run:
                 print('Please retry with correct info')
                 return ''
 
+    def insert_to_excel(self):
+        data = {'Date': [self.date], 'Miles': [float(self.miles)], 'Time': [self.time]}
+        df = pd.DataFrame.from_dict(data)
+        writer = pd.ExcelWriter('fitness_data.xlsx', engine='openpyxl')
+        writer.book = load_workbook('fitness_data.xlsx')
+        writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
+        reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='run')
+        df.to_excel(writer, index=False, header=False, sheet_name='run', startrow=len(reader) + 1)
+        writer.close()
+        print('\nRun data successfully inserted to fitness_data.xlsx\n')
+
 def create_insert_run():
     run = create_run_instance()
     run.insert_to_sql()
+    run.insert_to_excel()

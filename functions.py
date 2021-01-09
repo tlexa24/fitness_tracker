@@ -74,38 +74,11 @@ def get_time(w_r):
             print('Input again, using only numbers and two digits for each\n')
             continue
 
-def am_or_pm():
-    while True:
-        try:
-            ampm = input('AM or PM? ')
-            if ampm == 'AM' or ampm == 'am':
-                return 0
-            elif ampm == 'PM' or ampm == 'pm':
-                return 1
-            else:
-                raise ValueError
-        except ValueError:
-            print('\nSelect AM, am, PM, or pm:\n')
-            continue
-
-def get_time_of_day():
-    ap = am_or_pm()
-    time = get_time('w')
-    if ap == 0:
-        return time
-    times = time.split(':')
-    hours = str(int(times[0]) + 12)
-    minutes = times[1]
-    seconds = '00'
-    times = [hours, minutes, seconds]
-    time = ':'.join(times)
-    return time
-
 def get_yn():
     while True:
         try:
             y_n = input('Enter y/n: ')
-            if y_n == 'y' or 'n':
+            if y_n == 'y' or y_n == 'n':
                 return y_n
             else:
                 raise ValueError

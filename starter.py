@@ -3,7 +3,6 @@ import log_weight
 import log_diet
 import log_lifts
 import create_schedule
-import reader
 
 def initial_choice():
     while True:
@@ -11,8 +10,7 @@ def initial_choice():
               '2. Log run \n'
               '3. Log weight \n'
               '4. Log diet\n'
-              '5. Get exercise routine for next 4 days\n'
-              '6. View information')
+              '5. Get exercise routine for next 4 days')
         choice = input('Enter one of the numbers above: ')
         try:
             if int(choice) in range(1, 7):
@@ -36,5 +34,3 @@ def start_program():
         log_diet.create_insert_diet()
     if choice == '5':
         create_schedule.print_schedule()
-    if choice == '6':
-        reader.start_reader()
