@@ -35,7 +35,7 @@ def get_run_yesterday(yesterday):
         sql = 'SELECT * FROM run_log WHERE date_recorded = "{}";'.format(yesterday)
         cursor.execute(sql)
         result = cursor.fetchall()
-        conn.close()
+        cursor.close()
     if len(result) == 0:
         return 'n'
     else:
@@ -47,7 +47,7 @@ def get_lift_yesterday(yesterday):
         sql = 'SELECT * FROM lift_log WHERE date_recorded = "{}";'.format(yesterday)
         cursor.execute(sql)
         result = cursor.fetchall()
-        conn.close()
+        cursor.close()
     if len(result) == 0:
         return 'n'
     else:
@@ -57,8 +57,8 @@ def create_weight_instance():
     date_object = datetime.date.today()
     wt = get_weight()
     bodyfat = get_bf()
-    lift = get_lift_yesterday(date_object - timedelta(days=1))
-    run = get_run_yesterday(date_object - timedelta(days=1))
+    lift = get_lift_yesterday(str(date_object - timedelta(days=1)))
+    run = get_run_yesterday(str(date_object - timedelta(days=1)))
     waight = Weight(str(date_object), wt, bodyfat, lift, run)
     return waight
 
@@ -75,17 +75,17 @@ class Weight:
         with conn.cursor() as cursor:
             sql = "INSERT INTO weight_log VALUES ('" + self.date + "', '" + self.weight + "', '" \
                   + self.bodyfat + "', '" + self.lift + "', '" + self.run + "')"
-        print('\n\n\nWeight: ' + self.weight + '\nBody Fat: ' + self.bodyfat + '\nLift? ' +
-              self.lift + '\nRun? ' + self.run + '\nIs this info correct?')
-        confirm = functions.get_yn()
-        if confirm == 'y':
-            cursor.execute(sql)
-            conn.commit()
-            print('Weight data successfully inserted')
-            conn.close()
-        else:
-            print('Please retry with correct info')
-            return ''
+            print('\n\n\nWeight: ' + self.weight + '\nBody Fat: ' + self.bodyfat + '\nLift? ' +
+                  self.lift + '\nRun? ' + self.run + '\nIs this info correct?')
+            confirm = functions.get_yn()
+            if confirm == 'y':
+                cursor.execute(sql)
+                conn.commit()
+                print('\n\nWeight data successfully inserted to SQL')
+                conn.close()
+            else:
+                print('Please retry with correct info')
+                return 'n'
 
     def insert_to_excel(self):
         data = {'Date': [self.date], 'Body Fat': [float(self.bodyfat)], 'Weight': [float(self.weight)],
@@ -97,10 +97,10 @@ class Weight:
         reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='weight')
         df.to_excel(writer, index=False, header=False, sheet_name='weight', startrow=len(reader) + 1)
         writer.close()
-        print('\nWeight data successfully inserted to fitness_data.xlsx\n')
+        print('Weight data successfully inserted to fitness_data.xlsx\n')
 
 def create_insert_weight():
     weight = create_weight_instance()
-    weight.insert_to_sql()
-    weight.insert_to_excel()
-
+    confirm = weight.insert_to_sql()
+    if confirm != 'n':
+        weight.insert_to_excel()

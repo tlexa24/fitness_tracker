@@ -43,11 +43,11 @@ class Run:
             if confirm == 'y':
                 cursor.execute(sql)
                 conn.commit()
-                print('Run data successfully inserted')
+                print('\n\nRun data successfully inserted')
                 conn.close()
             else:
-                print('Please retry with correct info')
-                return ''
+                print('\nPlease retry with correct info')
+                return 'n'
 
     def insert_to_excel(self):
         data = {'Date': [self.date], 'Miles': [float(self.miles)], 'Time': [self.time]}
@@ -58,9 +58,10 @@ class Run:
         reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='run')
         df.to_excel(writer, index=False, header=False, sheet_name='run', startrow=len(reader) + 1)
         writer.close()
-        print('\nRun data successfully inserted to fitness_data.xlsx\n')
+        print('Run data successfully inserted to fitness_data.xlsx\n')
 
 def create_insert_run():
     run = create_run_instance()
-    run.insert_to_sql()
-    run.insert_to_excel()
+    confirm = run.insert_to_sql()
+    if confirm != 'n':
+        run.insert_to_excel()

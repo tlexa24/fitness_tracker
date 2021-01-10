@@ -1,4 +1,4 @@
-from starter import start_program
+from starter import kickoff
 
 if __name__ == '__main__':
-    start_program()
+    kickoff()

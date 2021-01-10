@@ -46,11 +46,11 @@ class Diet:
             if confirm == 'y':
                 cursor.execute(sql)
                 conn.commit()
-                print('Diet data successfully inserted')
+                print('\n\nDiet data successfully inserted to SQL')
                 conn.close()
             else:
                 print('Please retry with correct info')
-                return ''
+                return 'n'
 
     def insert_to_excel(self):
         data = {'Date': [self.date], 'Calories': [int(self.cals)], 'Carbs': [int(self.carbs)],
@@ -62,9 +62,10 @@ class Diet:
         reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='diet')
         df.to_excel(writer, index=False, header=False, sheet_name='diet', startrow=len(reader) + 1)
         writer.close()
-        print('\nDiet data successfully inserted to fitness_data.xlsx\n')
+        print('Diet data successfully inserted to fitness_data.xlsx\n')
 
 def create_insert_diet():
     diet = create_diet_instance()
-    diet.insert_to_sql()
-    diet.insert_to_excel()
+    confirm = diet.insert_to_sql()
+    if confirm != 'n':
+        diet.insert_to_excel()

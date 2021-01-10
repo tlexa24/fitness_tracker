@@ -13,7 +13,7 @@ def initial_choice():
               '5. Get exercise routine for next 4 days')
         choice = input('Enter one of the numbers above: ')
         try:
-            if int(choice) in range(1, 7):
+            if int(choice) in range(1, 6):
                 break
             else:
                 raise ValueError
@@ -22,8 +22,7 @@ def initial_choice():
             continue
     return choice
 
-def start_program():
-    choice = initial_choice()
+def start_program(choice):
     if choice == '1':
         log_lifts.create_insert_lift()
     if choice == '2':
@@ -34,3 +33,7 @@ def start_program():
         log_diet.create_insert_diet()
     if choice == '5':
         create_schedule.print_schedule()
+
+def kickoff():
+    choice = initial_choice()
+    start_program(choice)

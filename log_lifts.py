@@ -29,9 +29,7 @@ def get_routine():
         sql = "SELECT routine_ID, routine_name FROM routines WHERE program_id = '{}';".format(program)
         cursor.execute(sql)
         result = cursor.fetchall()
-        print(result)
         choices = [str(row['routine_ID']) for row in result]
-        # print([str(row[1]) for row in result])
         while True:
             try:
                 for row in result:
@@ -63,9 +61,9 @@ def get_exercises():
         log_template = []
         for d in result:
             num_sets = d['sets']
-            exercise_dict = {'name': d['exercise_name'], 'routine': routine[1], 'ID': d['exercise_ID'],
-                             'progressor': d['weight_progressor'], 'sets': d['sets'],
-                             'current': d['current_weight'], 'reps': d['reps']}
+            exercise_dict = {'name': d['exercise_name'], 'routine': routine[1], 'routine_ID': routine[0],
+                             'ID': d['exercise_ID'], 'progressor': d['weight_progressor'],
+                             'sets': d['sets'], 'current': d['current_weight'], 'reps': d['reps']}
             for n in range(1, num_sets + 1):
                 exercise_dict['Set {}'.format(n)] = {}
             log_template.append(exercise_dict)
@@ -123,10 +121,11 @@ def get_results():
     return template
 
 class Lift:
-    def __init__(self, date, ex_name, routine_name, exercise_id, weight, setno, reps):
+    def __init__(self, date, ex_name, routine_name, routine_id, exercise_id, weight, setno, reps):
         self.date = date
         self.exercise_name = ex_name
         self.routine = routine_name
+        self.routine_id = routine_id
         self.ID = exercise_id
         self.weight = weight
         self.set = setno
@@ -135,10 +134,11 @@ class Lift:
     def insert_to_sql(self):
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
-            sql = "INSERT INTO lift_log VALUES ('{}', '{}', '{}', '{}', '{}');".format(self.date, self.ID,
-                                                                                       self.weight, self.set, self.reps)
+            sql = "INSERT INTO lift_log VALUES ('{}', '{}', '{}', '{}', '{}', '{}');".format(self.date, self.routine_id,
+                                                                                             self.ID, self.weight,
+                                                                                             self.set, self.reps)
             cursor.execute(sql)
-            conn.commit()
+        conn.commit()
 
     def insert_to_excel(self):
         data = {'Date': [self.date], 'Routine': [self.routine], 'Exercise': [self.exercise_name],
@@ -156,10 +156,9 @@ def create_insert_lift():
     lift_inputs = get_results()
     for lift in lift_inputs:
         for n in range(1, lift['sets'] + 1):
-            lift_obj = Lift(day, lift['name'], lift['routine'], lift['ID'],
+            lift_obj = Lift(day, lift['name'], lift['routine'], lift['routine_ID'], lift['ID'],
                             lift['current'], n, lift['Set {}'.format(n)])
             lift_obj.insert_to_sql()
             lift_obj.insert_to_excel()
-    mysql_connections.connection.close()
     print('\nRun data successfully inserted to fitness_data.xlsx')
     print('Run data successfully inserted to SQL\n')
