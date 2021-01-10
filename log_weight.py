@@ -91,13 +91,13 @@ class Weight:
         data = {'Date': [self.date], 'Body Fat': [float(self.bodyfat)], 'Weight': [float(self.weight)],
                 'Lift Yesterday': [self.lift], 'Run Yesterday': [self.run]}
         df = pd.DataFrame.from_dict(data)
-        writer = pd.ExcelWriter('fitness_data.xlsx', engine='openpyxl')
-        writer.book = load_workbook('fitness_data.xlsx')
+        writer = pd.ExcelWriter('fitness_data.xlsm', engine='openpyxl')
+        writer.book = load_workbook('fitness_data.xlsm')
         writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-        reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='weight')
+        reader = pd.read_excel(r'fitness_data.xlsm', sheet_name='weight')
         df.to_excel(writer, index=False, header=False, sheet_name='weight', startrow=len(reader) + 1)
         writer.close()
-        print('Weight data successfully inserted to fitness_data.xlsx\n')
+        print('Weight data successfully inserted to fitness_data.xlsm\n')
 
 def create_insert_weight():
     weight = create_weight_instance()

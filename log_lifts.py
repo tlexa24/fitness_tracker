@@ -144,10 +144,10 @@ class Lift:
         data = {'Date': [self.date], 'Routine': [self.routine], 'Exercise': [self.exercise_name],
                 'Weight': [float(self.weight)], 'Set': [int(self.set)], 'Reps': [float(self.reps)]}
         df = pd.DataFrame.from_dict(data)
-        writer = pd.ExcelWriter('fitness_data.xlsx', engine='openpyxl')
-        writer.book = load_workbook('fitness_data.xlsx')
+        writer = pd.ExcelWriter('fitness_data.xlsm', engine='openpyxl')
+        writer.book = load_workbook('fitness_data.xlsm')
         writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-        reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='lift')
+        reader = pd.read_excel(r'fitness_data.xlsm', sheet_name='lift')
         df.to_excel(writer, index=False, header=False, sheet_name='lift', startrow=len(reader) + 1)
         writer.close()
 
@@ -160,5 +160,5 @@ def create_insert_lift():
                             lift['current'], n, lift['Set {}'.format(n)])
             lift_obj.insert_to_sql()
             lift_obj.insert_to_excel()
-    print('\nRun data successfully inserted to fitness_data.xlsx')
+    print('\nRun data successfully inserted to fitness_data.xlsm')
     print('Run data successfully inserted to SQL\n')

@@ -56,13 +56,13 @@ class Diet:
         data = {'Date': [self.date], 'Calories': [int(self.cals)], 'Carbs': [int(self.carbs)],
                 'Fats': [int(self.fats)], 'Proteins': [int(self.proteins)]}
         df = pd.DataFrame.from_dict(data)
-        writer = pd.ExcelWriter('fitness_data.xlsx', engine='openpyxl')
-        writer.book = load_workbook('fitness_data.xlsx')
+        writer = pd.ExcelWriter('fitness_data.xlsm', engine='openpyxl')
+        writer.book = load_workbook('fitness_data.xlsm')
         writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-        reader = pd.read_excel(r'fitness_data.xlsx', sheet_name='diet')
+        reader = pd.read_excel(r'fitness_data.xlsm', sheet_name='diet')
         df.to_excel(writer, index=False, header=False, sheet_name='diet', startrow=len(reader) + 1)
         writer.close()
-        print('Diet data successfully inserted to fitness_data.xlsx\n')
+        print('Diet data successfully inserted to fitness_data.xlsm\n')
 
 def create_insert_diet():
     diet = create_diet_instance()
