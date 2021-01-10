@@ -1,6 +1,5 @@
 import mysql_connections
 import functions
-import datetime
 import pandas as pd
 from openpyxl import load_workbook
 
@@ -152,7 +151,7 @@ class Lift:
         writer.close()
 
 def create_insert_lift():
-    day = str(datetime.date.today())
+    day = str(functions.get_date())
     lift_inputs = get_results()
     for lift in lift_inputs:
         for n in range(1, lift['sets'] + 1):

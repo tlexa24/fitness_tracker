@@ -1,6 +1,5 @@
 import mysql_connections
 import functions
-import datetime
 import pandas as pd
 from openpyxl import load_workbook
 
@@ -22,7 +21,7 @@ def get_diet():
             print('\n\nInput again, using only numbers.\n')
 
 def create_diet_instance():
-    day = str(datetime.date.today())
+    day = str(functions.get_date())
     diet = get_diet()
     diet_obj = Diet(day, diet[0], diet[1], diet[2], diet[3])
     return diet_obj
@@ -38,10 +37,15 @@ class Diet:
     def insert_to_sql(self):
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
-            sql = "INSERT INTO diet_log VALUES ('" + self.date + "', '" + self.cals \
-                  + "', '" + self.carbs + "', '" + self.fats + "', '" + self.proteins + "')"
-            print('\n\n\nCalories: ' + self.cals + '\nCarbs: ' + self.carbs + '\nFats: '
-                  + self.fats + '\nProteins: ' + self.proteins + '\nIs this info correct?')
+            sql = "INSERT INTO diet_log VALUES ('{}', '{}', '{}', '{}', '{}')".format(self.date, self.cals,
+                                                                                      self.carbs, self.fats,
+                                                                                      self.proteins)
+            print('\n\nDate: {}\nCals: {}\nCarbs: {}\nFats: {}\nProteins: {}\nIs this info correct?'.format(
+                                                                                                    self.date,
+                                                                                                    self.cals,
+                                                                                                    self.carbs,
+                                                                                                    self.fats,
+                                                                                                    self.proteins))
             confirm = functions.get_yn()
             if confirm == 'y':
                 cursor.execute(sql)

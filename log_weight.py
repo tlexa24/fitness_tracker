@@ -1,7 +1,6 @@
 import mysql_connections
 import functions
 import pandas as pd
-import datetime
 from datetime import timedelta
 from openpyxl import load_workbook
 
@@ -54,7 +53,7 @@ def get_lift_yesterday(yesterday):
         return 'y'
 
 def create_weight_instance():
-    date_object = datetime.date.today()
+    date_object = functions.get_date()
     wt = get_weight()
     bodyfat = get_bf()
     lift = get_lift_yesterday(str(date_object - timedelta(days=1)))
@@ -73,10 +72,11 @@ class Weight:
     def insert_to_sql(self):
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
-            sql = "INSERT INTO weight_log VALUES ('" + self.date + "', '" + self.weight + "', '" \
-                  + self.bodyfat + "', '" + self.lift + "', '" + self.run + "')"
-            print('\n\n\nWeight: ' + self.weight + '\nBody Fat: ' + self.bodyfat + '\nLift? ' +
-                  self.lift + '\nRun? ' + self.run + '\nIs this info correct?')
+            sql = "INSERT INTO weight_log VALUES ('{}', '{}', '{}', '{}', '{}')".format(self.date, self.weight,
+                                                                                        self.bodyfat, self.lift,
+                                                                                        self.run)
+            print('\n\nDate: {}\nWeight: {}\nBody Fat: {}\nLift Yesterday? {}\nRun Yesterday? {}'
+                  '\nIs this info correct?'.format(self.date, self.weight, self.bodyfat, self.lift, self.run))
             confirm = functions.get_yn()
             if confirm == 'y':
                 cursor.execute(sql)

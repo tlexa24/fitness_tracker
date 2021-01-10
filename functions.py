@@ -1,5 +1,5 @@
+import datetime
 
-# Checks if number can be converted into int
 def int_checker(num):
     result = False
     try:
@@ -85,3 +85,53 @@ def get_yn():
         except ValueError:
             print('\nEnter only y/n\n')
             continue
+
+def get_year():
+    while True:
+        try:
+            year = input('Please input the year (YYYY): ')
+            if length_checker(year, 4) and int_checker(year):
+                return year
+            else:
+                raise ValueError
+        except ValueError:
+            print('\n\n\nPlease try again, using (YYYY) format\n')
+
+def get_month():
+    while True:
+        try:
+            month = input('Please input the month (MM): ')
+            if length_checker(month, 2) and int_checker(month):
+                return month
+            else:
+                raise ValueError
+        except ValueError:
+            print('\n\n\nPlease try again, using (MM) format\n')
+
+def get_day():
+    while True:
+        try:
+            day = input('Please input the day (DD): ')
+            if length_checker(day, 2) and int_checker(day):
+                return day
+            else:
+                raise ValueError
+        except ValueError:
+            print('\n\n\nPlease try again, using (DD) format\n')
+
+def get_date():
+    while True:
+        try:
+            print('Are you logging results for today\'s date?')
+            neccessary = get_yn()
+            if neccessary == 'y':
+                return datetime.date.today()
+            if neccessary == 'n':
+                year = get_year()
+                month = get_month()
+                day = get_day()
+                date = "{}-{}-{}".format(year, month, day)
+                date_obj = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                return date_obj
+        except ValueError:
+            print('\n\nNot a valid date, please try again.\n')

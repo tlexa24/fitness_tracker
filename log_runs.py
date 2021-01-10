@@ -1,6 +1,5 @@
 import mysql_connections
 import functions
-import datetime
 import pandas as pd
 from openpyxl import load_workbook
 
@@ -22,7 +21,7 @@ def run_time():
     return time
 
 def create_run_instance():
-    date = str(datetime.date.today())
+    date = str(functions.get_date())
     runtime = run_time()
     miles = get_miles()
     run_obj = Run(date, miles, runtime)
@@ -37,8 +36,8 @@ class Run:
     def insert_to_sql(self):
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
-            sql = "INSERT INTO run_log VALUES ('" + self.date + "', '" + self.miles + "', '" + self.time + "')"
-            print('\n\n\nMiles: ' + self.miles + '\nTime: ' + self.time + '\nIs this info correct?')
+            sql = "INSERT INTO run_log VALUES ('{}', '{}', '{}')".format(self.date, self.miles, self.time)
+            print('\n\n\nDate: {}\nMiles: {}\nTime: {}\nIs this info correct?'.format(self.date, self.miles, self.time))
             confirm = functions.get_yn()
             if confirm == 'y':
                 cursor.execute(sql)
