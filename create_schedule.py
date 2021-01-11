@@ -2,6 +2,7 @@ import mysql_connections
 import functions
 from itertools import cycle, islice
 import datetime
+from openpyxl import load_workbook
 import pandas as pd
 
 def get_full_schedule(program):
@@ -18,38 +19,31 @@ def get_list_of_days(schedule):
     return days
 
 def get_last_lift(program):
-    with mysql_connections.connection.cursor() as cursor:
+    with mysql_connections.connectiondict.cursor() as cursor:
         sql = "SELECT routine_ID, routine_name FROM routines WHERE program_id = '{}';".format(program)
         cursor.execute(sql)
-        result = cursor.fetchall()[:6]
-        choices = [str(row[0]) for row in result]
-    while True:
-        try:
-            for row in result:
-                print(str(row[0]) + '. ' + functions.name_converter(str(row[1])))
-            routine = input('Which was the last lifting routine you completed? ')
-            if functions.check_if_in_list(routine, choices):
-                return routine
-            else:
-                print('\n\nChoose only one of the given numbers.')
-                raise ValueError
-        except ValueError:
-            continue
+        routines = cursor.fetchall()
+    with mysql_connections.connectiondict.cursor() as cursor:
+        new_sql = "SELECT * FROM lift_log ORDER BY date_recorded DESC LIMIT 1"
+        cursor.execute(new_sql)
+        result = cursor.fetchall()
+        for routine in routines:
+            if routine['routine_ID'] == result[0]['routine_ID']:
+                print('Your last recorded lift was ' + functions.name_converter(routine['routine_name']))
+                print('Was today a rest day?')
+                confirm = functions.get_yn()
+        return result[0]['routine_ID'], confirm
 
-def get_today(recent_lift, schedule):
-    last_lift = recent_lift
+def get_day_of_last_lift(last_lift, schedule):
     for day in schedule:
         if day['lifting_routine'] is not None:
             if int(day['lifting_routine']) == int(last_lift):
-                return int(day['day_of_week']) + 1
+                return int(day['day_of_week'])
 
-def cycled_picker_list(starting_point, starting_list, elements):
-    final_list = []
+def cycled_picker_list(starting_point, starting_list):
     days_cycle = cycle(starting_list)
     starting_at_today = islice(days_cycle, starting_point, None)
-    while len(final_list) < elements:
-        final_list.append(next(starting_at_today))
-    return final_list
+    return next(starting_at_today)
 
 def get_program():
     with mysql_connections.connection.cursor() as cursor:
@@ -70,40 +64,41 @@ def get_program():
             except ValueError:
                 continue
 
-def get_next_4_days():
+def get_tomorrow():
     program = get_program()
     full_schedule = get_full_schedule(program)
-    last_lift = get_last_lift(program)
+    last_lift_data = get_last_lift(program)
+    last_lift = last_lift_data[0]
+    today_question = last_lift_data[1]
     list_of_days = get_list_of_days(full_schedule)
-    today = get_today(last_lift, full_schedule)
-    next_4_days = cycled_picker_list((list_of_days.index(today) + 1), list_of_days, 4)
-    return program, next_4_days
+    today = get_day_of_last_lift(last_lift, full_schedule)
+    addition = 1
+    if today_question == 'y':
+        addition += 1
+    tomorrow = cycled_picker_list(list_of_days.index(today), list_of_days) + addition
+    return program, tomorrow
 
-def get_next_4_schedules():
-    next_4_days = get_next_4_days()
-    program = next_4_days[0]
-    days_list = next_4_days[1]
+def get_tomorrow_schedule():
+    tomorrow = get_tomorrow()
+    program = tomorrow[0]
+    day = tomorrow[1]
     with mysql_connections.connectiondict.cursor() as cursor:
         sql = "SELECT day_of_week, lifting_routine, ab_routine, run " \
               "FROM program_schedule " \
               "WHERE program_ID = {} " \
-              "AND day_of_week IN ({}, {}, {}, {});".format(program, days_list[0], days_list[1], days_list[2],
-                                                            days_list[3])
+              "AND day_of_week = {};".format(program, day)
         cursor.execute(sql)
         result = cursor.fetchall()
-    return result
+    return result[0]
 
 day_names = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
 def change_days_to_dates():
-    days = get_next_4_schedules()
+    tomorrow_routine = get_tomorrow_schedule()
     today = datetime.date.today()
-    addition = 1
-    for day in days:
-        day_name = (today + datetime.timedelta(days=addition)).weekday()
-        day['day_of_week'] = str(day_names[day_name]) + ', ' + str(today + datetime.timedelta(days=addition))
-        addition += 1
-    return days
+    day_name = (today + datetime.timedelta(days=1)).weekday()
+    tomorrow_routine['day_of_week'] = str(day_names[day_name]) + ', ' + str(today + datetime.timedelta(days=1))
+    return tomorrow_routine
 
 def dict_to_df(sql):
     df = pd.read_sql(sql, mysql_connections.connection)
@@ -115,41 +110,51 @@ def dict_to_df(sql):
 
 def get_routine_dataframes():
     schedule = change_days_to_dates()
-    for day in schedule:
-        if day['lifting_routine'] is not None:
-            sql = "SELECT exercise_order, exercise_name, sets, reps, current_weight, last_set_AMRAP " \
-                  "FROM exercises_in_routines " \
-                  "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID " \
-                  "WHERE routine_id = '{}'" \
-                  "ORDER BY exercise_order ASC;".format(day['lifting_routine'])
-            day['lifting_routine'] = dict_to_df(sql)
-        if day['ab_routine'] is not None:
-            sql = "SELECT exercise_order, exercise_name, sets, reps FROM exercises_in_routines " \
-                  "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID  " \
-                  "WHERE routine_id = '{}'" \
-                  "ORDER BY exercise_order ASC;".format(day['ab_routine'])
-            day['ab_routine'] = dict_to_df(sql)
+    if schedule['lifting_routine'] is not None:
+        with mysql_connections.connectiondict.cursor() as cursor:
+            sql = "SELECT routine_name FROM routines WHERE routine_ID = {}".format(schedule['lifting_routine'])
+            cursor.execute(sql)
+            routine_name = cursor.fetchall()
+        schedule['routine name'] = functions.name_converter(routine_name[0]['routine_name'])
+        sql = "SELECT exercise_order, exercise_name, sets, reps, current_weight, last_set_AMRAP " \
+              "FROM exercises_in_routines " \
+              "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID " \
+              "WHERE routine_id = '{}'" \
+              "ORDER BY exercise_order ASC;".format(schedule['lifting_routine'])
+        schedule['lifting_routine'] = dict_to_df(sql)
+    if schedule['ab_routine'] is not None:
+        sql = "SELECT exercise_order, exercise_name, sets, reps FROM exercises_in_routines " \
+              "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID  " \
+              "WHERE routine_id = '{}'" \
+              "ORDER BY exercise_order ASC;".format(schedule['ab_routine'])
+        schedule['ab_routine'] = dict_to_df(sql)
     return schedule
 
-def get_next_4_routines():
-    schedule = get_routine_dataframes()
-    return schedule
+def insert_to_excel(df, sheet):
+    writer = pd.ExcelWriter('lift_schedule.xlsx', engine='openpyxl')
+    writer.book = load_workbook('lift_schedule.xlsx')
+    writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
+    reader = pd.read_excel(r'lift_schedule.xlsx', sheet_name=sheet)
+    df.to_excel(writer, index=False, header=True, sheet_name=sheet, startrow=len(reader))
+    writer.close()
 
 def print_schedule():
-    schedule = get_next_4_routines()
+    schedule = get_routine_dataframes()
+    print(schedule)
     day_string = 'RUN: {}\nLIFT: {}\nABS: {}\n'
-    for day in schedule:
-        print('\n' + day['day_of_week'])
-        run, lift, ab = 'NO', 'NO', 'NO'
-        if day['run'] is not None:
-            run = 'YES'
-        if day['lifting_routine'] is not None:
-            lift = 'Yes'
-        if day['ab_routine'] is not None:
-            ab = 'YES'
-        print(day_string.format(run, lift, ab))
-        if day['lifting_routine'] is not None:
-            print(day['lifting_routine'])
-            print('\n')
-        if day['ab_routine'] is not None:
-            print(day['ab_routine'])
+    print('\n' + schedule['day_of_week'])
+    run, lift, ab = 'NO', 'NO', 'NO'
+    if schedule['run'] is not None:
+        run = 'YES'
+    if schedule['lifting_routine'] is not None:
+        lift = schedule['routine name']
+    if schedule['ab_routine'] is not None:
+        ab = 'YES'
+    print(day_string.format(run, lift, ab))
+    if schedule['lifting_routine'] is not None:
+        insert_to_excel(schedule['lifting_routine'], 'lifts')
+        print(schedule['lifting_routine'])
+        print('\n')
+    if schedule['ab_routine'] is not None:
+        print(schedule['ab_routine'])
+        insert_to_excel(schedule['ab_routine'], 'abs')

@@ -10,7 +10,7 @@ def initial_choice():
               '2. Log run \n'
               '3. Log weight \n'
               '4. Log diet\n'
-              '5. Get exercise routine for next 4 days')
+              '5. Get schedule for tomorrow')
         choice = input('Enter one of the numbers above: ')
         try:
             if int(choice) in range(1, 6):
