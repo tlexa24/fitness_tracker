@@ -92,5 +92,3 @@ class Diet:
 def create_insert_diet():
     diet = create_diet_instance()
     diet.insert_to_sql()
-
-create_insert_diet()
