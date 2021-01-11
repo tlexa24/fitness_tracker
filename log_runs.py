@@ -48,19 +48,6 @@ class Run:
                 print('\nPlease retry with correct info')
                 return 'n'
 
-    def insert_to_excel(self):
-        data = {'Date': [self.date], 'Miles': [float(self.miles)], 'Time': [self.time]}
-        df = pd.DataFrame.from_dict(data)
-        writer = pd.ExcelWriter('fitness_data.xlsm', engine='openpyxl')
-        writer.book = load_workbook('fitness_data.xlsm')
-        writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-        reader = pd.read_excel(r'fitness_data.xlsm', sheet_name='run')
-        df.to_excel(writer, index=False, header=False, sheet_name='run', startrow=len(reader) + 1)
-        writer.close()
-        print('Run data successfully inserted to fitness_data.xlsm\n')
-
 def create_insert_run():
     run = create_run_instance()
-    confirm = run.insert_to_sql()
-    if confirm != 'n':
-        run.insert_to_excel()
+    run.insert_to_sql()

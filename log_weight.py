@@ -1,8 +1,6 @@
 import mysql_connections
 import functions
-import pandas as pd
 from datetime import timedelta
-from openpyxl import load_workbook
 
 def get_weight():
     while True:
@@ -87,20 +85,6 @@ class Weight:
                 print('Please retry with correct info')
                 return 'n'
 
-    def insert_to_excel(self):
-        data = {'Date': [self.date], 'Body Fat': [float(self.bodyfat)], 'Weight': [float(self.weight)],
-                'Lift Yesterday': [self.lift], 'Run Yesterday': [self.run]}
-        df = pd.DataFrame.from_dict(data)
-        writer = pd.ExcelWriter('fitness_data.xlsm', engine='openpyxl')
-        writer.book = load_workbook('fitness_data.xlsm')
-        writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-        reader = pd.read_excel(r'fitness_data.xlsm', sheet_name='weight')
-        df.to_excel(writer, index=False, header=False, sheet_name='weight', startrow=len(reader) + 1)
-        writer.close()
-        print('Weight data successfully inserted to fitness_data.xlsm\n')
-
 def create_insert_weight():
     weight = create_weight_instance()
-    confirm = weight.insert_to_sql()
-    if confirm != 'n':
-        weight.insert_to_excel()
+    weight.insert_to_sql()

@@ -1,7 +1,17 @@
 import mysql_connections
 import functions
-import pandas as pd
-from openpyxl import load_workbook
+from urllib import request, error
+import myfitnesspal
+import urllib3.exceptions
+import socket
+import requests
+
+def connect():
+    try:
+        request.urlopen('http://google.com')
+        return True
+    except error.URLError:
+        return False
 
 def get_diet():
     while True:
@@ -20,10 +30,33 @@ def get_diet():
         except ValueError:
             print('\n\nInput again, using only numbers.\n')
 
+def my_fitness_pal(date):
+    year, month, day = date.year, date.month, date.day
+    try:
+        client = myfitnesspal.Client('tlexa2497@gmail.com')
+        day = client.get_date(year, month, day)
+        diet = day.totals
+        print('Successfully pulled information from MyFitnessPal')
+        return [int(diet['calories']), int(diet['carbohydrates']), int(diet['fat']), int(diet['protein'])]
+    except socket.gaierror:
+        return None
+    except urllib3.exceptions.NewConnectionError:
+        return None
+    except urllib3.exceptions.MaxRetryError:
+        return None
+    except requests.exceptions.ConnectionError:
+        return None
+
 def create_diet_instance():
-    day = str(functions.get_date())
+    day = functions.get_date()
+    if connect():
+        diet = my_fitness_pal(day)
+        if diet is not None:
+            diet_obj = Diet(day, diet[0], diet[1], diet[2], diet[3])
+            return diet_obj
+        print('\n\nCould not connect to MyFitnessPal, please input manually.\n')
     diet = get_diet()
-    diet_obj = Diet(day, diet[0], diet[1], diet[2], diet[3])
+    diet_obj = Diet(str(day), diet[0], diet[1], diet[2], diet[3])
     return diet_obj
 
 class Diet:
@@ -56,20 +89,8 @@ class Diet:
                 print('Please retry with correct info')
                 return 'n'
 
-    def insert_to_excel(self):
-        data = {'Date': [self.date], 'Calories': [int(self.cals)], 'Carbs': [int(self.carbs)],
-                'Fats': [int(self.fats)], 'Proteins': [int(self.proteins)]}
-        df = pd.DataFrame.from_dict(data)
-        writer = pd.ExcelWriter('fitness_data.xlsm', engine='openpyxl')
-        writer.book = load_workbook('fitness_data.xlsm')
-        writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-        reader = pd.read_excel(r'fitness_data.xlsm', sheet_name='diet')
-        df.to_excel(writer, index=False, header=False, sheet_name='diet', startrow=len(reader) + 1)
-        writer.close()
-        print('Diet data successfully inserted to fitness_data.xlsm\n')
-
 def create_insert_diet():
     diet = create_diet_instance()
-    confirm = diet.insert_to_sql()
-    if confirm != 'n':
-        diet.insert_to_excel()
+    diet.insert_to_sql()
+
+create_insert_diet()
