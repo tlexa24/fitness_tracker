@@ -130,14 +130,6 @@ def get_routine_dataframes():
         schedule['ab_routine'] = dict_to_df(sql)
     return schedule
 
-def insert_to_excel(df, sheet):
-    writer = pd.ExcelWriter('lift_schedule.xlsx', engine='openpyxl')
-    writer.book = load_workbook('lift_schedule.xlsx')
-    writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
-    reader = pd.read_excel(r'lift_schedule.xlsx', sheet_name=sheet)
-    df.to_excel(writer, index=False, header=True, sheet_name=sheet, startrow=len(reader))
-    writer.close()
-
 def print_schedule():
     schedule = get_routine_dataframes()
     print(schedule)
@@ -152,9 +144,7 @@ def print_schedule():
         ab = 'YES'
     print(day_string.format(run, lift, ab))
     if schedule['lifting_routine'] is not None:
-        insert_to_excel(schedule['lifting_routine'], 'lifts')
         print(schedule['lifting_routine'])
         print('\n')
     if schedule['ab_routine'] is not None:
         print(schedule['ab_routine'])
-        insert_to_excel(schedule['ab_routine'], 'abs')
