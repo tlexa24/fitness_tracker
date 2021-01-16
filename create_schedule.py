@@ -2,7 +2,6 @@ import mysql_connections
 import functions
 from itertools import cycle, islice
 import datetime
-from openpyxl import load_workbook
 import pandas as pd
 
 def get_full_schedule(program):

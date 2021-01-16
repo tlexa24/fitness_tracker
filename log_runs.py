@@ -1,7 +1,5 @@
 import mysql_connections
 import functions
-import pandas as pd
-from openpyxl import load_workbook
 
 def get_miles():
     while True:
