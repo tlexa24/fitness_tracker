@@ -4,6 +4,7 @@ import log_diet
 import log_lifts
 import create_schedule
 
+
 def initial_choice():
     while True:
         print('1. Log lift \n'
@@ -22,6 +23,7 @@ def initial_choice():
             continue
     return choice
 
+
 def start_program(choice):
     if choice == '1':
         log_lifts.create_insert_lift()
@@ -33,6 +35,7 @@ def start_program(choice):
         log_diet.create_insert_diet()
     if choice == '5':
         create_schedule.print_schedule()
+
 
 def kickoff():
     choice = initial_choice()

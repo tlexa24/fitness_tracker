@@ -6,12 +6,14 @@ import urllib3.exceptions
 import socket
 import requests
 
+
 def connect():
     try:
         request.urlopen('http://google.com')
         return True
     except error.URLError:
         return False
+
 
 def get_diet():
     while True:
@@ -30,6 +32,7 @@ def get_diet():
         except ValueError:
             print('\n\nInput again, using only numbers.\n')
 
+
 def my_fitness_pal(date):
     year, month, day = date.year, date.month, date.day
     try:
@@ -47,6 +50,7 @@ def my_fitness_pal(date):
     except requests.exceptions.ConnectionError:
         return None
 
+
 def create_diet_instance():
     day = functions.get_date()
     if connect():
@@ -58,6 +62,7 @@ def create_diet_instance():
     diet = get_diet()
     diet_obj = Diet(str(day), diet[0], diet[1], diet[2], diet[3])
     return diet_obj
+
 
 class Diet:
     def __init__(self, date, cals, carbs, fats, proteins):
@@ -74,11 +79,11 @@ class Diet:
                                                                                       self.carbs, self.fats,
                                                                                       self.proteins)
             print('\n\nDate: {}\nCals: {}\nCarbs: {}\nFats: {}\nProteins: {}\nIs this info correct?'.format(
-                                                                                                    self.date,
-                                                                                                    self.cals,
-                                                                                                    self.carbs,
-                                                                                                    self.fats,
-                                                                                                    self.proteins))
+                self.date,
+                self.cals,
+                self.carbs,
+                self.fats,
+                self.proteins))
             confirm = functions.get_yn()
             if confirm == 'y':
                 cursor.execute(sql)
@@ -88,6 +93,7 @@ class Diet:
             else:
                 print('Please retry with correct info')
                 return 'n'
+
 
 def create_insert_diet():
     diet = create_diet_instance()

@@ -1,6 +1,7 @@
 import mysql_connections
 import functions
 
+
 def get_program():
     with mysql_connections.connection.cursor() as cursor:
         sql = "SELECT program_ID, program_name FROM programs;"
@@ -19,6 +20,7 @@ def get_program():
                     raise ValueError
             except ValueError:
                 continue
+
 
 def get_routine():
     with mysql_connections.connectiondict.cursor() as cursor:
@@ -43,6 +45,7 @@ def get_routine():
             except ValueError:
                 continue
 
+
 def get_exercises():
     dictconn = mysql_connections.connectiondict
     with dictconn.cursor() as cursor:
@@ -66,11 +69,13 @@ def get_exercises():
             log_template.append(exercise_dict)
         return log_template
 
+
 def update_weight(exercise, new):
     sql = "UPDATE exercises SET current_weight = '{}' WHERE exercise_ID = '{}';".format(new, exercise)
     with mysql_connections.connection.cursor() as cursor:
         cursor.execute(sql)
         mysql_connections.connection.commit()
+
 
 def get_weight():
     while True:
@@ -83,6 +88,7 @@ def get_weight():
         except ValueError:
             print('Input again, using only numbers in xxx.x format:\n')
             continue
+
 
 def get_results():
     template = get_exercises()
@@ -117,6 +123,7 @@ def get_results():
                 update_weight(exercise['ID'], float(exercise['current']) + int(exercise['progressor']))
     return template
 
+
 class Lift:
     def __init__(self, date, ex_name, routine_name, routine_id, exercise_id, weight, setno, reps):
         self.date = date
@@ -136,6 +143,7 @@ class Lift:
                                                                                              self.set, self.reps)
             cursor.execute(sql)
         conn.commit()
+
 
 def create_insert_lift():
     day = str(functions.get_date())

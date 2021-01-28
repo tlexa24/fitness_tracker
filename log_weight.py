@@ -2,6 +2,7 @@ import mysql_connections
 import functions
 from datetime import timedelta
 
+
 def get_weight():
     while True:
         try:
@@ -13,6 +14,7 @@ def get_weight():
         except ValueError:
             print('Input again, using only numbers in xxx.x format:\n')
             continue
+
 
 def get_bf():
     while True:
@@ -26,6 +28,7 @@ def get_bf():
             print('Input again, using only numbers in xxx.x format:\n')
             continue
 
+
 def get_run_yesterday(yesterday):
     conn = mysql_connections.connection
     with conn.cursor() as cursor:
@@ -37,6 +40,7 @@ def get_run_yesterday(yesterday):
         return 'n'
     else:
         return 'y'
+
 
 def get_lift_yesterday(yesterday):
     conn = mysql_connections.connection
@@ -50,6 +54,7 @@ def get_lift_yesterday(yesterday):
     else:
         return 'y'
 
+
 def create_weight_instance():
     date_object = functions.get_date()
     wt = get_weight()
@@ -58,6 +63,7 @@ def create_weight_instance():
     run = get_run_yesterday(str(date_object - timedelta(days=1)))
     waight = Weight(str(date_object), wt, bodyfat, lift, run)
     return waight
+
 
 class Weight:
     def __init__(self, d, wt, b, lift, r):
@@ -84,6 +90,7 @@ class Weight:
             else:
                 print('Please retry with correct info')
                 return 'n'
+
 
 def create_insert_weight():
     weight = create_weight_instance()

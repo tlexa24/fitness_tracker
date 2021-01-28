@@ -1,5 +1,6 @@
 import datetime
 
+
 def int_checker(num):
     result = False
     try:
@@ -9,16 +10,19 @@ def int_checker(num):
         pass
     return result
 
+
 def name_converter(string):
     string = string.replace('_', ' ')
     string = string.replace('-', ' ')
     return string
+
 
 def check_if_in_list(var, lst):
     if var in lst:
         return True
     else:
         return False
+
 
 def float_checker(num):
     result = False
@@ -29,11 +33,14 @@ def float_checker(num):
         pass
     return result
 
+
 def length_checker(var, needed_len):
     return len(var) == needed_len
 
+
 def max_length_checker(var, maxi):
     return len(var) <= maxi
+
 
 def float41_checker(num):
     if float_checker(num) and max_length_checker(num, 5):
@@ -44,11 +51,13 @@ def float41_checker(num):
     else:
         return False
 
+
 def time_checker(var):
     if int_checker(var) and length_checker(var, 2):
         return True
     else:
         return False
+
 
 def get_time(w_r):
     while True:
@@ -74,6 +83,7 @@ def get_time(w_r):
             print('Input again, using only numbers and two digits for each\n')
             continue
 
+
 def get_yn():
     while True:
         try:
@@ -86,6 +96,7 @@ def get_yn():
             print('\nEnter only y/n\n')
             continue
 
+
 def get_year():
     while True:
         try:
@@ -96,6 +107,7 @@ def get_year():
                 raise ValueError
         except ValueError:
             print('\n\n\nPlease try again, using (YYYY) format\n')
+
 
 def get_month():
     while True:
@@ -108,6 +120,7 @@ def get_month():
         except ValueError:
             print('\n\n\nPlease try again, using (MM) format\n')
 
+
 def get_day():
     while True:
         try:
@@ -119,14 +132,15 @@ def get_day():
         except ValueError:
             print('\n\n\nPlease try again, using (DD) format\n')
 
+
 def get_date():
     while True:
         try:
             print('Are you logging results for today\'s date?')
-            neccessary = get_yn()
-            if neccessary == 'y':
+            necessary = get_yn()
+            if necessary == 'y':
                 return datetime.date.today()
-            if neccessary == 'n':
+            if necessary == 'n':
                 year = get_year()
                 month = get_month()
                 day = get_day()

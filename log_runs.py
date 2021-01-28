@@ -1,6 +1,7 @@
 import mysql_connections
 import functions
 
+
 def get_miles():
     while True:
         try:
@@ -13,10 +14,12 @@ def get_miles():
             print('Input again, using only numbers in xxx.x format:\n')
             continue
 
+
 def run_time():
     times = functions.get_time('r')
     time = ':'.join(times)
     return time
+
 
 def create_run_instance():
     date = str(functions.get_date())
@@ -24,6 +27,7 @@ def create_run_instance():
     miles = get_miles()
     run_obj = Run(date, miles, runtime)
     return run_obj
+
 
 class Run:
     def __init__(self, date, m, t):
@@ -45,6 +49,7 @@ class Run:
             else:
                 print('\nPlease retry with correct info')
                 return 'n'
+
 
 def create_insert_run():
     run = create_run_instance()

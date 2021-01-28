@@ -4,18 +4,21 @@ from itertools import cycle, islice
 import datetime
 import pandas as pd
 
+
 def get_full_schedule(program):
     with mysql_connections.connectiondict.cursor() as cursor:
-        sql = "SELECT * FROM program_schedule WHERE program_ID = {};".format(program)
+        sql = 'SELECT * FROM program_schedule WHERE program_ID = {};'.format(program)
         cursor.execute(sql)
         result = cursor.fetchall()
     return result
+
 
 def get_list_of_days(schedule):
     days = []
     for day in schedule:
         days.append(day['day_of_week'])
     return days
+
 
 def get_last_lift(program):
     with mysql_connections.connectiondict.cursor() as cursor:
@@ -33,16 +36,19 @@ def get_last_lift(program):
                 confirm = functions.get_yn()
         return result[0]['routine_ID'], confirm
 
+
 def get_day_of_last_lift(last_lift, schedule):
     for day in schedule:
         if day['lifting_routine'] is not None:
             if int(day['lifting_routine']) == int(last_lift):
                 return int(day['day_of_week'])
 
+
 def cycled_picker_list(starting_point, starting_list):
     days_cycle = cycle(starting_list)
     starting_at_today = islice(days_cycle, starting_point, None)
     return next(starting_at_today)
+
 
 def get_program():
     with mysql_connections.connection.cursor() as cursor:
@@ -63,6 +69,7 @@ def get_program():
             except ValueError:
                 continue
 
+
 def get_tomorrow():
     program = get_program()
     full_schedule = get_full_schedule(program)
@@ -77,6 +84,7 @@ def get_tomorrow():
     tomorrow = cycled_picker_list(list_of_days.index(today), list_of_days) + addition
     return program, tomorrow
 
+
 def get_tomorrow_schedule():
     tomorrow = get_tomorrow()
     program = tomorrow[0]
@@ -90,7 +98,9 @@ def get_tomorrow_schedule():
         result = cursor.fetchall()
     return result[0]
 
+
 day_names = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+
 
 def change_days_to_dates():
     tomorrow_routine = get_tomorrow_schedule()
@@ -99,6 +109,7 @@ def change_days_to_dates():
     tomorrow_routine['day_of_week'] = str(day_names[day_name]) + ', ' + str(today + datetime.timedelta(days=1))
     return tomorrow_routine
 
+
 def dict_to_df(sql):
     df = pd.read_sql(sql, mysql_connections.connection)
     df = df.rename(columns={'exercise_name': 'Exercise', 'sets': 'Sets', 'reps': 'Reps', 'current_weight': 'Weight',
@@ -106,6 +117,7 @@ def dict_to_df(sql):
     df.set_index('exercise_order', inplace=True)
     df.index.name = None
     return df
+
 
 def get_routine_dataframes():
     schedule = change_days_to_dates()
@@ -128,6 +140,7 @@ def get_routine_dataframes():
               "ORDER BY exercise_order ASC;".format(schedule['ab_routine'])
         schedule['ab_routine'] = dict_to_df(sql)
     return schedule
+
 
 def print_schedule():
     schedule = get_routine_dataframes()
