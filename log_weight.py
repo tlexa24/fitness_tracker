@@ -32,7 +32,7 @@ def get_bf():
 def get_run_yesterday(yesterday):
     conn = mysql_connections.connection
     with conn.cursor() as cursor:
-        sql = 'SELECT * FROM run_log WHERE date_recorded = "{}";'.format(yesterday)
+        sql = 'SELECT * FROM run_log WHERE date_recorded = \'{}\';'.format(yesterday)
         cursor.execute(sql)
         result = cursor.fetchall()
         cursor.close()
@@ -45,7 +45,7 @@ def get_run_yesterday(yesterday):
 def get_lift_yesterday(yesterday):
     conn = mysql_connections.connection
     with conn.cursor() as cursor:
-        sql = 'SELECT * FROM lift_log WHERE date_recorded = "{}";'.format(yesterday)
+        sql = 'SELECT * FROM lift_log WHERE date_recorded = \'{}\';'.format(yesterday)
         cursor.execute(sql)
         result = cursor.fetchall()
         cursor.close()
