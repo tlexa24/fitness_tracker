@@ -29,12 +29,15 @@ def get_last_lift(program):
         new_sql = "SELECT * FROM lift_log ORDER BY date_recorded DESC LIMIT 1"
         cursor.execute(new_sql)
         result = cursor.fetchall()
-        for routine in routines:
-            if routine['routine_ID'] == result[0]['routine_ID']:
-                print('Your last recorded lift was ' + functions.name_converter(routine['routine_name']))
-                print('Was today a rest day?')
-                confirm = functions.get_yn()
-        return result[0]['routine_ID'], confirm
+        if len(result) == 0:
+            return None
+        else:
+            for routine in routines:
+                if routine['routine_ID'] == result[0]['routine_ID']:
+                    print('Your last recorded lift was ' + functions.name_converter(routine['routine_name']))
+                    print('Was today a rest day?')
+                    confirm = functions.get_yn()
+            return result[0]['routine_ID'], confirm
 
 
 def get_day_of_last_lift(last_lift, schedule):
@@ -74,14 +77,17 @@ def get_tomorrow():
     program = get_program()
     full_schedule = get_full_schedule(program)
     last_lift_data = get_last_lift(program)
-    last_lift = last_lift_data[0]
-    today_question = last_lift_data[1]
-    list_of_days = get_list_of_days(full_schedule)
-    today = get_day_of_last_lift(last_lift, full_schedule)
-    addition = 1
-    if today_question == 'y':
-        addition += 1
-    tomorrow = cycled_picker_list(list_of_days.index(today), list_of_days) + addition
+    if last_lift_data is None:
+        tomorrow = 1
+    else:
+        last_lift = last_lift_data[0]
+        today_question = last_lift_data[1]
+        list_of_days = get_list_of_days(full_schedule)
+        today = get_day_of_last_lift(last_lift, full_schedule)
+        addition = 1
+        if today_question == 'y':
+            addition += 1
+        tomorrow = cycled_picker_list(list_of_days.index(today), list_of_days) + addition
     return program, tomorrow
 
 
@@ -144,7 +150,6 @@ def get_routine_dataframes():
 
 def print_schedule():
     schedule = get_routine_dataframes()
-    print(schedule)
     day_string = 'RUN: {}\nLIFT: {}\nABS: {}\n'
     print('\n' + schedule['day_of_week'])
     run, lift, ab = 'NO', 'NO', 'NO'
