@@ -153,4 +153,4 @@ def create_insert_lift():
             lift_obj = Lift(day, lift['name'], lift['routine'], lift['routine_ID'], lift['ID'],
                             lift['current'], n, lift['Set {}'.format(n)])
             lift_obj.insert_to_sql()
-    print('Run data successfully inserted to SQL\n')
+    print('Lift data successfully inserted to SQL\n')

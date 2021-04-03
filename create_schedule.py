@@ -81,11 +81,11 @@ def get_tomorrow():
         tomorrow = 1
     else:
         last_lift = last_lift_data[0]
-        today_question = last_lift_data[1]
+        rest_day_today = last_lift_data[1]
         list_of_days = get_list_of_days(full_schedule)
         today = get_day_of_last_lift(last_lift, full_schedule)
         addition = 1
-        if today_question == 'y':
+        if rest_day_today == 'y':
             addition += 1
         tomorrow = cycled_picker_list(list_of_days.index(today), list_of_days) + addition
     return program, tomorrow
