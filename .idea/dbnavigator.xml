@@ -8,6 +8,7 @@
   <component name="DBNavigator.Project.DataExportManager">
     <export-instructions>
       <create-header value="true" />
+      <friendly-headers value="false" />
       <quote-values-containing-separator value="true" />
       <quote-all-values value="false" />
       <value-separator value="" />
@@ -25,7 +26,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="3737293b-81c9-47e5-ab19-023d18399149">
-        <schema name="fitness" object-types="view, index, column, constraint, table, function, dataset trigger, procedure" />
+        <schema name="fitness" object-types="procedure, function, table, view" />
       </connection>
     </loaded-nodes>
   </component>

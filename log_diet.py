@@ -4,6 +4,7 @@ from urllib import request, error
 import myfitnesspal
 import urllib3.exceptions
 import socket
+import json
 import requests
 
 
@@ -48,6 +49,8 @@ def my_fitness_pal(date):
     except urllib3.exceptions.MaxRetryError:
         return None
     except requests.exceptions.ConnectionError:
+        return None
+    except json.decoder.JSONDecodeError:
         return None
 
 

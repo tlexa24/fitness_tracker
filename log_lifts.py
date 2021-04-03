@@ -54,7 +54,7 @@ def get_exercises():
               "FROM exercises_in_routines " \
               "LEFT JOIN exercises ON exercises.exercise_ID = exercises_in_routines.exercise_ID " \
               "WHERE routine_id = '{}'" \
-              "ORDER BY exercise_order ASC;".format(routine[0])
+              "ORDER BY exercise_order;".format(routine[0])
         cursor.execute(sql)
         result = cursor.fetchall()
         dictconn.close()
@@ -153,5 +153,4 @@ def create_insert_lift():
             lift_obj = Lift(day, lift['name'], lift['routine'], lift['routine_ID'], lift['ID'],
                             lift['current'], n, lift['Set {}'.format(n)])
             lift_obj.insert_to_sql()
-    print('\nRun data successfully inserted to fitness_data.xlsm')
     print('Run data successfully inserted to SQL\n')
