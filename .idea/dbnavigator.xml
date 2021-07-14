@@ -25,21 +25,21 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
-      <connection connection-id="3737293b-81c9-47e5-ab19-023d18399149">
-        <schema name="fitness" object-types="procedure, function, table, view" />
+      <connection connection-id="160d1a77-c356-4e14-a6ec-179bbf12664b">
+        <schema name="fitness" object-types="table, view, procedure, function, constraint, index, column, dataset trigger" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="3737293b-81c9-47e5-ab19-023d18399149">
-      <console name="Connection" type="STANDARD" schema="mysql" session="Main" />
+    <connection id="160d1a77-c356-4e14-a6ec-179bbf12664b">
+      <console name="Connection" type="STANDARD" schema="fitness" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="3737293b-81c9-47e5-ab19-023d18399149" />
+    <connection id="160d1a77-c356-4e14-a6ec-179bbf12664b" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />
@@ -67,7 +67,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="3737293b-81c9-47e5-ab19-023d18399149" active="true">
+      <connection id="160d1a77-c356-4e14-a6ec-179bbf12664b" active="true">
         <database>
           <name value="Connection" />
           <description value="" />
@@ -80,13 +80,16 @@
           <url-type value="DATABASE" />
           <host value="localhost" />
           <port value="3306" />
-          <database value="mysql" />
+          <database value="Fitness" />
           <type value="USER_PASSWORD" />
           <user value="root" />
           <deprecated-pwd value="U291MzdMS3M1" />
         </database>
         <properties>
           <auto-commit value="false" />
+          <properties>
+            <property key="serverTimezone" value="UTC" />
+          </properties>
         </properties>
         <ssh-settings>
           <active value="false" />
@@ -210,8 +213,6 @@
           <object-type name="TABLE" enabled="true" />
           <object-type name="VIEW" enabled="true" />
           <object-type name="MATERIALIZED VIEW" enabled="true" />
-          <object-type name="NESTED TABLE" enabled="false" />
-          <object-type name="COLUMN" enabled="false" />
           <object-type name="INDEX" enabled="true" />
           <object-type name="CONSTRAINT" enabled="true" />
           <object-type name="DATASET TRIGGER" enabled="true" />
@@ -222,8 +223,6 @@
           <object-type name="FUNCTION" enabled="true" />
           <object-type name="PACKAGE" enabled="true" />
           <object-type name="TYPE" enabled="true" />
-          <object-type name="TYPE ATTRIBUTE" enabled="false" />
-          <object-type name="ARGUMENT" enabled="false" />
           <object-type name="DIMENSION" enabled="false" />
           <object-type name="CLUSTER" enabled="false" />
           <object-type name="DBLINK" enabled="true" />
@@ -531,7 +530,7 @@
       <regional-settings>
         <date-format value="MEDIUM" />
         <number-format value="UNGROUPED" />
-        <locale value="SYSTEM_DEFAULT" />
+        <locale value="en_US_POSIX" />
         <use-custom-formats value="false" />
       </regional-settings>
       <environment>

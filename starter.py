@@ -30,7 +30,8 @@ def start_program(choice):
     if choice == '2':
         log_runs.create_insert_run()
     if choice == '3':
-        log_weight.create_insert_weight()
+        weight_log = log_weight.WeightLog()
+        weight_log.insert_to_sql()
     if choice == '4':
         log_diet.create_insert_diet()
     if choice == '5':

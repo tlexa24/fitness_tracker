@@ -1,7 +1,21 @@
+
+# This file contains various functions used throughout the rest of the program,
+# mainly for data collection, transforming, and validation
+
 import datetime
 
 
+class InputError(Exception):
+    """Exception called when a user input does not fit into the accepted format"""
+    pass
+
+
 def int_checker(num):
+    """
+    This function checks that a given number is indeed an integer, rather than any other data type
+    :param num: Takes in a number
+    :return: Returns True if the number is an integer, False if not
+    """
     result = False
     try:
         int(num)
@@ -12,12 +26,23 @@ def int_checker(num):
 
 
 def name_converter(string):
+    """In the SQL database, the names have '-' and '_' instead of spaces. For ease of reading while
+    printing to the user, these characters are replaced with spaces
+    :param string: Takes in a string
+    :return: Returns the same string, with the '-'  and '_' replaced with spaces
+    """
     string = string.replace('_', ' ')
     string = string.replace('-', ' ')
     return string
 
 
 def check_if_in_list(var, lst):
+    """
+    This function checks if a given variable is an element of a given list
+    :param var: Takes in a target variable
+    :param lst: Takes in a list
+    :return: Returns True if the variable is in the list, False if not
+    """
     if var in lst:
         return True
     else:
@@ -25,6 +50,11 @@ def check_if_in_list(var, lst):
 
 
 def float_checker(num):
+    """
+    This function checks that a given number is indeed a float, rather than any other data type
+    :param num: Takes in a number
+    :return: Returns True if the number is a float, False if not
+    """
     result = False
     try:
         float(num)
@@ -35,14 +65,33 @@ def float_checker(num):
 
 
 def length_checker(var, needed_len):
+    """
+    This function verifies that a variable's length is equal to the desired length
+    :param var: Takes in a variable
+    :param needed_len: The desired length for the variable to match
+    :return: Returns boolean depending on whether the variable's length matches the desired length
+    """
     return len(var) == needed_len
 
 
 def max_length_checker(var, maxi):
+    """
+    This function verifies that a variable's length is not greater than a desired length
+    :param var: Takes in a variable
+    :param maxi: The maximum length desired for the variable
+    :return: Returns boolean depending on whether the variable's length is less than or equal to desired length
+    """
     return len(var) <= maxi
 
 
 def float41_checker(num):
+    """
+    This function checks if a given number is a float, speficially one that only has one number after
+    the decimal point. 123.4 would return True, while 123.45 would return false. Useful because the SQL
+    database has fields setup to hold data in this format only
+    :param num: Takes in a number
+    :return: Returns True if variable is indeed a float with one number after the decimal, False if not
+    """
     if float_checker(num) and max_length_checker(num, 5):
         if max_length_checker(str(float(num)).split('.')[1], 1):
             return True
@@ -53,6 +102,14 @@ def float41_checker(num):
 
 
 def time_checker(var):
+    """
+    Checks that variable is a factor of time (hours, minutes or seconds). Verified by the variable being
+    an int, using the int_checker function, and is of length 2, using the length_checker function. 02 could
+    be a 2 hours, 2 minutes, or 2 seconds, and would return True. 2h is not an int, and could not be a factor
+    of time, and would return False
+    :param var:
+    :return: Returns bollean depending on whether the variable is indeed a factor or time
+    """
     if int_checker(var) and length_checker(var, 2):
         return True
     else:
@@ -85,6 +142,11 @@ def get_time(w_r):
 
 
 def get_yn():
+    """
+    This function is used to obtain user approval at several different points in the program, most
+    commonly to get their confirmation that data is correct before loading it into the database
+    :return: Returns the user's input of 'y' or 'n'
+    """
     while True:
         try:
             y_n = input('Enter y/n: ')
@@ -98,6 +160,12 @@ def get_yn():
 
 
 def get_year():
+    """
+    This function obtains a year from the user in the process of contructing a data. Validates their input by
+    verifying that the input is an integer and of length 4. If not, the user is prompted to keep trying until the
+    input is of the correct format
+    :return: Returns the user-inputted year once validated
+    """
     while True:
         try:
             year = input('Please input the year (YYYY): ')
@@ -110,6 +178,12 @@ def get_year():
 
 
 def get_month():
+    """
+    This function obtains a month from the user in the process of contructing a data. Validates their input by
+    verifying that the input is an integer and of length 2. If not, the user is prompted to keep trying until the
+    input is of the correct format
+    :return: Returns the user-inputted month once validated
+    """
     while True:
         try:
             month = input('Please input the month (MM): ')
@@ -122,6 +196,12 @@ def get_month():
 
 
 def get_day():
+    """
+   This function obtains a day from the user in the process of contructing a data. Validates their input by
+   verifying that the input is an integer and of length 2. If not, the user is prompted to keep trying until the
+   input is of the correct format
+   :return: Returns the user-inputted day once validated
+   """
     while True:
         try:
             day = input('Please input the day (DD): ')
@@ -134,6 +214,14 @@ def get_day():
 
 
 def get_date():
+    """
+    This function constructs a datetime instance holding a user-inputted date. In the event that the user would
+    like to use the current day for their SQL insert, then datetime.date.today() is returned. If they would like
+    to use another date in their insert statement, then the year, month, and day of the instance are obtained
+    through the get_year, get_month, and get_day functions. If the date is not valid, then the user is prompted
+    to try again until they enter a valid date
+    :return: Returns the datetime instance containing the user-selected date
+    """
     while True:
         try:
             print('Are you logging results for today\'s date?')

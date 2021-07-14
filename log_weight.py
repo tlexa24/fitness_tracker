@@ -1,97 +1,76 @@
+
+# This file contains functions and a class to handle inserting weight/bodyfat data into the database
 import mysql_connections
 import functions
-from datetime import timedelta
 
 
-def get_weight():
+def input_weight():
+    """This function gets user input for their weight. Contains a try/except block to validate that the data matches the
+    correct format of xxx.x. If they input invalid data, the custom InputError exception is raised and the user will be
+    prompted to re-enter their data until the format is correct
+    :return: Returns the input weight as a string, for proper insertion into SQL
+    """
     while True:
         try:
             weight = input('Enter weight(xxx.x): ')
             if functions.float41_checker(weight):
                 return str(weight)
             else:
-                raise ValueError
-        except ValueError:
+                raise functions.InputError()
+        except functions.InputError():
             print('Input again, using only numbers in xxx.x format:\n')
             continue
 
 
-def get_bf():
+def input_bodyfat():
+    """This function gets user input for their bodyfat. Contains a try/except block to validate that the data matches
+    the correct format of xx.x. If they input invalid data, the custom InputError exception is raised and the user will
+    be prompted to re-enter their data until the format is correct
+    :return: Returns the input bodyfat as a string, for proper insertion into SQL
+    """
     while True:
         try:
             bf = input('Enter the body fat % in xx.x format: ')
             if functions.float41_checker(bf):
                 return str(bf)
             else:
-                raise ValueError
-        except ValueError:
-            print('Input again, using only numbers in xxx.x format:\n')
+                raise functions.InputError()
+        except functions.InputError():
+            print('Try again, using only numbers in xx.x format:\n')
             continue
 
 
-def get_run_yesterday(yesterday):
-    conn = mysql_connections.connection
-    with conn.cursor() as cursor:
-        sql = 'SELECT * FROM run_log WHERE date_recorded = \'{}\';'.format(yesterday)
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        cursor.close()
-    if len(result) == 0:
-        return 'n'
-    else:
-        return 'y'
+class WeightLog:
+    """Instancs of this class store all of the data needed to insert a new row into the weight_log SQL table"""
+    def __init__(self):
+        """Initializes the class instance. Date is obtained with the get_date function, and weight/bodyfat are both
+        obtained from the above functions"""
+        self.date = str(functions.get_date())
+        self.weight = input_weight()
+        self.bodyfat = input_bodyfat()
 
-
-def get_lift_yesterday(yesterday):
-    conn = mysql_connections.connection
-    with conn.cursor() as cursor:
-        sql = 'SELECT * FROM lift_log WHERE date_recorded = \'{}\';'.format(yesterday)
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        cursor.close()
-    if len(result) == 0:
-        return 'n'
-    else:
-        return 'y'
-
-
-def create_weight_instance():
-    date_object = functions.get_date()
-    wt = get_weight()
-    bodyfat = get_bf()
-    lift = get_lift_yesterday(str(date_object - timedelta(days=1)))
-    run = get_run_yesterday(str(date_object - timedelta(days=1)))
-    waight = Weight(str(date_object), wt, bodyfat, lift, run)
-    return waight
-
-
-class Weight:
-    def __init__(self, d, wt, b, lift, r):
-        self.date = d
-        self.weight = wt
-        self.bodyfat = b
-        self.lift = lift
-        self.run = r
+    def create_sql(self):
+        """
+        This method writes the SQL insert statement, using the data members of the WeightLog class instance
+        :return: Returns a tuple, first element being the SQL insert statement, and the second being a y/n confirmation
+        on whether the user approves the data
+        """
+        sql = "INSERT INTO weight_log VALUES ('{}', '{}', '{}')".format(self.date, self.weight, self.bodyfat)
+        print('\n\nDate: {}\nWeight: {}\nBody Fat: {}'
+              '\nIs this info correct? y/n'.format(self.date, self.weight, self.bodyfat))
+        confirm = functions.get_yn()
+        return sql, confirm
 
     def insert_to_sql(self):
+        """This method establishes connection to the SQL database. It then calls the create_sql method to write the SQL
+        statement, finally executing and committing the statement to have the data load into the database"""
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
-            sql = "INSERT INTO weight_log VALUES ('{}', '{}', '{}', '{}', '{}')".format(self.date, self.weight,
-                                                                                        self.bodyfat, self.lift,
-                                                                                        self.run)
-            print('\n\nDate: {}\nWeight: {}\nBody Fat: {}\nLift Yesterday? {}\nRun Yesterday? {}'
-                  '\nIs this info correct?'.format(self.date, self.weight, self.bodyfat, self.lift, self.run))
-            confirm = functions.get_yn()
-            if confirm == 'y':
-                cursor.execute(sql)
+            sql = self.create_sql()
+            if sql[1] == 'y':
+                cursor.execute(sql[0])
                 conn.commit()
                 print('\n\nWeight data successfully inserted to SQL')
                 conn.close()
             else:
                 print('Please retry with correct info')
-                return 'n'
-
-
-def create_insert_weight():
-    weight = create_weight_instance()
-    weight.insert_to_sql()
