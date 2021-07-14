@@ -117,6 +117,15 @@ def time_checker(var):
 
 
 def get_time(w_r):
+    """
+    This functions collects time data from the user, in the form of hours, minutes, depending on the time's
+    eventual use, seconds. Each factor of the time is validated, and if an invalid entry is made, the user
+    will be prompted to try until they enter valid data.
+    :param w_r: 'w', 'r'. This attribute determines whether the time is for logging weight or runs. Weight
+    result in the time being a time of day (5:00:00 or 17:30:00) while Run would result in the time being
+    a time as if from a stop watch (01:12:23).
+    :return: Returns the entered time as string
+    """
     while True:
         try:
             hours = input('Input number of hours (hh): ')
@@ -128,8 +137,7 @@ def get_time(w_r):
                 else:
                     raise ValueError
             seconds = input('Input number of seconds(ss): ')
-            times = []
-            times.extend([hours, minutes, seconds])
+            times = [hours, minutes, seconds]
             for t in times:
                 if time_checker(t):
                     continue
