@@ -1,3 +1,8 @@
+
+# This file coordinates the entire program, having the user input what type
+# of action they would like to take, and calling appropriate functions/methods
+# to accomodate
+
 import log_runs
 import log_weight
 import log_diet
@@ -6,6 +11,12 @@ import create_schedule
 
 
 def initial_choice():
+    """
+    This function provides a list of possible actions to the user. They enter a number
+    corresponding to their choice. Verifies their number  is indeed an option to them,
+    and if not, they must try again.
+    :return: The number corresponding to their choice is returned
+    """
     while True:
         print('1. Log lift \n'
               '2. Log run \n'
@@ -25,6 +36,11 @@ def initial_choice():
 
 
 def start_program(choice):
+    """
+    This function takes in the choice made by the user in the initial_choice function.
+    Uses this choice to kickstart whatever file corresponds to their choice.
+    :param choice: The action the user decided to undertake
+    """
     if choice == '1':
         log_lifts.create_insert_lift()
     if choice == '2':
@@ -40,7 +56,6 @@ def start_program(choice):
         create_schedule.print_schedule()
 
 
-def kickoff():
-    choice = initial_choice()
-    start_program(choice)
-
+if __name__ == '__main__':
+    desired_action = initial_choice()
+    start_program(desired_action)
