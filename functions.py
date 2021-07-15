@@ -153,13 +153,15 @@ def get_yn():
     """
     This function is used to obtain user approval at several different points in the program, most
     commonly to get their confirmation that data is correct before loading it into the database
-    :return: Returns the user's input of 'y' or 'n'
+    :return: Returns True for 'y' or False for 'n'
     """
     while True:
         try:
             y_n = input('Enter y/n: ')
-            if y_n == 'y' or y_n == 'n':
-                return y_n
+            if y_n == 'y':
+                return True
+            if y_n == 'n':
+                return False
             else:
                 raise ValueError
         except ValueError:
@@ -234,9 +236,9 @@ def get_date():
         try:
             print('Are you logging results for today\'s date?')
             necessary = get_yn()
-            if necessary == 'y':
+            if necessary:
                 return datetime.date.today()
-            if necessary == 'n':
+            if not necessary:
                 year = get_year()
                 month = get_month()
                 day = get_day()

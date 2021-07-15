@@ -5,9 +5,10 @@ import functions
 
 
 def input_weight():
-    """This function gets user input for their weight. Contains a try/except block to validate that the data matches the
-    correct format of xxx.x. If they input invalid data, the custom InputError exception is raised and the user will be
-    prompted to re-enter their data until the format is correct
+    """This function gets user input for their weight. Contains a try/except block to
+    validate that the data matches the correct format of xxx.x. If they input invalid data,
+    the custom InputError exception is raised and the user will be prompted to re-enter their
+    data until the format is correct
     :return: Returns the input weight as a string, for proper insertion into SQL
     """
     while True:
@@ -23,9 +24,10 @@ def input_weight():
 
 
 def input_bodyfat():
-    """This function gets user input for their bodyfat. Contains a try/except block to validate that the data matches
-    the correct format of xx.x. If they input invalid data, the custom InputError exception is raised and the user will
-    be prompted to re-enter their data until the format is correct
+    """This function gets user input for their bodyfat. Contains a try/except block to
+    validate that the data matches the correct format of xx.x. If they input invalid data,
+    the custom InputError exception is raised and the user will be prompted to re-enter their
+    data until the format is correct
     :return: Returns the input bodyfat as a string, for proper insertion into SQL
     """
     while True:
@@ -41,19 +43,21 @@ def input_bodyfat():
 
 
 class WeightLog:
-    """Instancs of this class store all of the data needed to insert a new row into the weight_log SQL table"""
+    """Instancs of this class store all of the data needed to insert a new row into
+    the weight_log SQL table"""
     def __init__(self):
-        """Initializes the class instance. Date is obtained with the get_date function, and weight/bodyfat are both
-        obtained from the above functions"""
+        """Initializes the class instance. Date is obtained with the get_date function, a
+        nd weight/bodyfat are both obtained from the above functions"""
         self.date = str(functions.get_date())
         self.weight = input_weight()
         self.bodyfat = input_bodyfat()
 
     def create_sql(self):
         """
-        This method writes the SQL insert statement, using the data members of the WeightLog class instance
-        :return: Returns a tuple, first element being the SQL insert statement, and the second being a y/n confirmation
-        on whether the user approves the data
+        This method writes the SQL insert statement, using the data members of the WeightLog
+        class instance
+        :return: Returns a tuple, first element being the SQL insert statement, and the second
+        being a y/n confirmation on whether the user approves the data
         """
         sql = "INSERT INTO weight_log VALUES ('{}', '{}', '{}')".format(self.date, self.weight, self.bodyfat)
         print('\n\nDate: {}\nWeight: {}\nBody Fat: {}'
@@ -62,12 +66,13 @@ class WeightLog:
         return sql, confirm
 
     def insert_to_sql(self):
-        """This method establishes connection to the SQL database. It then calls the create_sql method to write the SQL
-        statement, finally executing and committing the statement to have the data load into the database"""
+        """This method establishes connection to the SQL database. It then calls the create_sql method
+        to write the SQL statement, finally executing and committing the statement to have the data
+        load into the weight_log database table"""
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
             sql = self.create_sql()
-            if sql[1] == 'y':
+            if sql[1]:
                 cursor.execute(sql[0])
                 conn.commit()
                 print('\n\nWeight data successfully inserted to SQL')

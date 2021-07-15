@@ -33,7 +33,8 @@ def start_program(choice):
         weight_log = log_weight.WeightLog()
         weight_log.insert_to_sql()
     if choice == '4':
-        log_diet.create_insert_diet()
+        diet_log = log_diet.DietLog()
+        diet_log.insert_to_sql()
     if choice == '5':
         create_schedule.print_schedule()
 
@@ -41,3 +42,4 @@ def start_program(choice):
 def kickoff():
     choice = initial_choice()
     start_program(choice)
+
