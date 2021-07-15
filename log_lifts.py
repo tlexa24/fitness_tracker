@@ -1,8 +1,19 @@
+
+# This file contains multiple functions and a class to collect and load data
+# on weightlifting results into the SQL database
+
 import mysql_connections
 import functions
 
 
 def get_program():
+    """
+    This function reads in the available exercise programs from the SQL database, displaying
+    these as choices to the user. The user will be prompted to enter the number that corresponds
+    to their desired program, and if do not enter a valid choice, they will be prompted to try
+    until their choice is valid
+    :return: Returns the corresponding number
+    """
     with mysql_connections.connection.cursor() as cursor:
         sql = "SELECT program_ID, program_name FROM programs;"
         cursor.execute(sql)
