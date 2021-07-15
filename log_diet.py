@@ -1,3 +1,4 @@
+
 # This file contains functions and a class to handle inserting diet data into the database
 
 import mysql_connections
@@ -7,9 +8,9 @@ import myfitnesspal
 
 
 def connect():
-    """This function asks the user whether they would like to obtain their data from MyFitnessPal
-    or input it manually. If they select MyFitnessPal, the function then verifies a current
-    connection to the internet
+    """This function asks the user whether they would like to obtain their
+    data from MyFitnessPal or input it manually. If they select MyFitnessPal,
+    the function then verifies a current connection to the internet
     :return: True if a connection is present, False if not"""
     print('\nWould you like to download data from MyFitnessPal y/n')
     confirm = functions.get_yn()
@@ -26,7 +27,8 @@ def connect():
 
 def my_fitness_pal(date):
     """
-    This function connects to MyFitnessPal and pulls out the diet info logged for a specific day
+    This function connects to MyFitnessPal and pulls out the diet info
+    logged for a specific day
     :param date: The datetime instance representing the day the user wants diet day for
     :return: Returns a dictionary containing the calories, carbohydrates, fats, and proteins
     logged on a certain day
@@ -43,9 +45,10 @@ def my_fitness_pal(date):
 
 def get_diet():
     """
-    In the event that the program is unable to connect with MyFitnessPal, this function has the user
-    manually input their dietary information for a given day. Their entries are validated as integers
-    and if the entries are invalid, the user is prompted to try until their input is valid
+    In the event that the program is unable to connect with MyFitnessPal, this
+    function has the user manually input their dietary information for a given day.
+    Their entries are validated as integers and if the entries are invalid, the
+    user is prompted to try until their input is valid
     :return: Returns a dictionary containing the calories, carbohydrates, fats, and proteins
     logged on a certain day
     """
@@ -64,12 +67,13 @@ def get_diet():
 
 
 class DietLog:
-    """Instancs of this class store all of the data needed to insert a new row into the diet_log SQL table"""
+    """Instances of this class store all of the data needed to insert a new row
+    into the diet_log SQL table"""
 
     def __init__(self):
-        """Initializes the class instance. Date is obtained with the get_date function, connection_status
-        is obtained from the connect function. Based on connection_status, the diet info is obtained from
-        either the my_fitness_pal function or the get_diet function.
+        """Initializes the class instance. Date is obtained with the get_date function,
+        connection_status is obtained from the connect function. Based on connection_status,
+        the diet info is obtained from either the my_fitness_pal function or the get_diet function.
         """
         self.date = functions.get_date()
         self.connection_status = connect()
@@ -80,10 +84,11 @@ class DietLog:
 
     def create_sql(self):
         """
-        This method writes the SQL insert statement, using the data members of the DietLog class instance,
-        navigating through the dictionary of the diet data member when neccessary
-        :return: Returns a tuple, first element being the SQL insert statement, and the second being a y/n confirmation
-        on whether the user approves the data
+        This method writes the SQL insert statement, using the data members of
+        the DietLog class instance, navigating through the dictionary of the
+        diet data member when neccessary
+        :return: Returns a tuple, first element being the SQL insert statement,
+        and the second being a y/n confirmation on whether the user approves the data
         """
         sql = "INSERT INTO diet_log VALUES ('{}', '{}', '{}', '{}', '{}')".format(self.date, self.diet['cals'],
                                                                                   self.diet['carb'],
@@ -98,9 +103,9 @@ class DietLog:
         return sql, confirm
 
     def insert_to_sql(self):
-        """This method establishes connection to the SQL database. It then calls the create_sql method
-        to write the SQL statement, finally executing and committing the statement to have the data
-        load into the diet_log database table"""
+        """This method establishes connection to the SQL database. It then calls
+        the create_sql method to write the SQL statement, finally executing and
+        committing the statement to have the data load into the diet_log database table"""
         conn = mysql_connections.connection
         with conn.cursor() as cursor:
             sql = self.create_sql()

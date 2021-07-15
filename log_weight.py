@@ -43,7 +43,7 @@ def input_bodyfat():
 
 
 class WeightLog:
-    """Instancs of this class store all of the data needed to insert a new row into
+    """Instances of this class store all of the data needed to insert a new row into
     the weight_log SQL table"""
     def __init__(self):
         """Initializes the class instance. Date is obtained with the get_date function, a

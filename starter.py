@@ -28,7 +28,8 @@ def start_program(choice):
     if choice == '1':
         log_lifts.create_insert_lift()
     if choice == '2':
-        log_runs.create_insert_run()
+        run_log = log_runs.RunLog()
+        run_log.insert_to_sql()
     if choice == '3':
         weight_log = log_weight.WeightLog()
         weight_log.insert_to_sql()
