@@ -12,7 +12,7 @@ def get_program():
     these as choices to the user. The user will be prompted to enter the number that corresponds
     to their desired program, and if do not enter a valid choice, they will be prompted to try
     until their choice is valid
-    :return: Returns the corresponding number
+    :return: Returns the number corresponding to the user's current program
     """
     with mysql_connections.connection.cursor() as cursor:
         sql = "SELECT program_ID, program_name FROM programs;"
