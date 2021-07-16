@@ -38,7 +38,7 @@ This allows users to input the amount of calories, carbs, fats, and proteins the
 This allows users to log in their weight and bodyfat percentage, along with the date and time of day. Users can see how their data changes over time, and also based on the time of day at which they measure. 
 
 
-## Future Updates
+## Planned Updates
 While this program is currently functional for its purpose, I plan to make several major additions in the coming months. 
 
 Some ideas for future expansion (in order of priority):
