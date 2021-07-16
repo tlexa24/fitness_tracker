@@ -1,1 +1,3 @@
-# Fitness Tracker
+# Health Tracker
+## Tim Lexa
+============
