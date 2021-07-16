@@ -124,6 +124,7 @@ def get_weight(exercise):
                 weight = input('Enter the correct weight(xxx.x): ')
                 if functions.float41_checker(weight):
                     update_weight(exercise['ID'], weight)
+                    exercise['current'] = weight
                     break
                 else:
                     raise ValueError

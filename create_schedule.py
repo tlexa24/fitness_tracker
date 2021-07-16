@@ -248,5 +248,5 @@ def print_schedule():
         print(schedule['lifting_routine'].to_string(index=False))
         print('\n')
     if schedule['ab_routine'] is not None:
-        print(schedule['ab_routine'])
-
+        print(schedule['ab_routine'].to_string(index=False))
+        print('\n')
