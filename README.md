@@ -1,3 +1,3 @@
 # Health Tracker
-## Tim Lexa
-============
+### Tim Lexa
+
