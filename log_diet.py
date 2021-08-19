@@ -65,6 +65,18 @@ def get_diet():
         except functions.InputError():
             print('\n\nInput again, using only numbers.\n')
 
+def get_burned():
+    while True:
+        try:
+            burned = input("How many calories did you burn? ")
+            if functions.int_checker(burned):
+                break
+            else:
+                raise functions.InputError()
+        except functions.InputError():
+            print("\n\nTry again, using only an integer\n")
+    return burned
+
 
 class DietLog:
     """Instances of this class store all of the data needed to insert a new row
@@ -81,6 +93,8 @@ class DietLog:
             self.diet = my_fitness_pal(self.date)
         else:
             self.diet = get_diet()
+        self.burned = get_burned()
+        self.effective = str(int(self.diet['cals']) - int(self.burned))
 
     def create_sql(self):
         """
@@ -90,16 +104,22 @@ class DietLog:
         :return: Returns a tuple, first element being the SQL insert statement,
         and the second being a y/n confirmation on whether the user approves the data
         """
-        sql = "INSERT INTO diet_log VALUES ('{}', '{}', '{}', '{}', '{}')".format(self.date, self.diet['cals'],
-                                                                                  self.diet['carb'],
-                                                                                  self.diet['fat'],
-                                                                                  self.diet['protein'])
-        print("\n\nDate: {}\nCals: {}\nCarbs: {}\nFats: {}\nProteins: {}\nIs this info correct?".format(
-                                                                                  self.date, self.diet['cals'],
-                                                                                  self.diet['carb'],
-                                                                                  self.diet['fat'],
-                                                                                  self.diet['protein']))
+        sql = "INSERT INTO diet_log VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(self.date,
+                                                                                              self.diet['cals'],
+                                                                                              self.diet['carb'],
+                                                                                              self.diet['fat'],
+                                                                                              self.diet['protein'],
+                                                                                              self.burned,
+                                                                                              self.effective)
+        print("\n\nDate: {}\nCals: {}\nCarbs: {}\nFats: {}\nProteins: {}\nCalories Burned: {}"
+              "\nEffective Calories: {}\nIs this info correct?".format(self.date, self.diet['cals'],
+                                                                       self.diet['carb'],
+                                                                       self.diet['fat'],
+                                                                       self.diet['protein'],
+                                                                       self.burned,
+                                                                       self.effective))
         confirm = functions.get_yn()
+        print(sql)
         return sql, confirm
 
     def insert_to_sql(self):
