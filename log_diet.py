@@ -66,6 +66,11 @@ def get_diet():
             print('\n\nInput again, using only numbers.\n')
 
 def get_burned():
+    """
+    This function prompts the user to input the number of calories bruned on a day in order to calculate their
+    effective calorie number for the day
+    :return: Returns the number of calories the user burned this day
+    """
     while True:
         try:
             burned = input("How many calories did you burn? ")
