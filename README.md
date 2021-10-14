@@ -20,6 +20,20 @@ I first created the database to store information related to this type of progra
 
 The program is based around a command line interface once the starter.py script is ran. While this program is only for myself at the moment, I created the command line interface to be used by someone without knowledge of the program's logic. This is done with thorough validation of all user inputs. Every single time that the user inputs data, the program verifies that the entry is in the correct format, and if not, it informs the user of the correct format and prompts them to try again until their entry is valid
 
+## Installation/Use Guide
+
+In order to use the program to full functionality, a number of steps need to completed first:
+* Setting up MySQL database
+    * This is done by running the 'fitness_schema.sql' file to install the database on your local machine
+* Installing necessary frameworks
+    * Using python in the command line, simply type "pip install 'module_name'"
+    * For example, "pip install PyMySQL"
+
+To run the program:
+* Navigate to the program's directory in the command line
+* Type "python starter.py" and follow the on-screen instructions
+
+
 
 ## Functionality
 ### Weightlifting Tracking
