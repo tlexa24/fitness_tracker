@@ -58,7 +58,7 @@ While this program is currently functional for its purpose, I plan to make sever
 Some ideas for future expansion (in order of priority):
 
 * Add functionality to review historical data. At the moment, I am viewing my past results through SQL queries in my database client, without an option to do so in the python program. This is my next step, as storing the data is meaningless without an easy way to retrieve it. 
-* Move from a command line interface to web app. This would be the first major step to making the program more accessible to others besides myself
+* Move from a command line interface to web app using the Django framework. This would be the first major step to making the program more accessible to others besides myself
 * Add support for different workout programs, including those which do not revolve around a linear progression of weights
 * Add support for scheduling a diet. (i.e. telling the program you plan to eat xxx calories on day yyy of the weekly schedule)
 * A bit of a stretch goal at the moment, but I would love to begin developing a mobile app that could be used as an alternative to the CLI/future web app to log data
